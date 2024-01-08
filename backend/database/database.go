@@ -53,24 +53,13 @@ func VerifyRoomId(roomId string) (bool, error) {
 }
 
 func VerifyUser(userId int) bool {
-    query := "SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)"
-    var exists bool
+	query := "SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)"
+	var exists bool
 
-    err := db.QueryRow(query, userId).Scan(&exists)
-    if err != nil {
-        fmt.Printf("error verifying user id = %v, error: %v", userId, err)
-        return false
-    }
-    return exists
-}
-
-func AddMessage(userId int, roomId string, msg []byte) bool {
-	query := "INSERT INTO messages (content, sender, receiver, istext) VALUES ($1, $2, $3, $4)"
-	fmt.Printf("query: %v", query)
-	_, err := db.Exec(query, msg, userId, roomId, true) //TODO: take isText variable from frontend and then change it
+	err := db.QueryRow(query, userId).Scan(&exists)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("error verifying user id = %v, error: %v", userId, err)
 		return false
 	}
-	return true
+	return exists
 }
