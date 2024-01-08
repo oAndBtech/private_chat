@@ -18,15 +18,16 @@ func User(id int) (model.UserModel, error) {
 	return user, nil
 }
 
-func AddUser(user model.UserModel) bool {
-	query := "INSERT INTO users (name, phone, fcmtoken) VALUES ($1, $2, $3)"
+func AddUser(user model.UserModel) (int, error) {
+	query := "INSERT INTO users (name, phone, fcmtoken) VALUES ($1, $2, $3) RETURNING id"
 
-	_, err := db.Exec(query, user.Name, user.Phone, user.FcmToken)
+	var id int
+	err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken).Scan(&id)
 	if err != nil {
 		fmt.Println("Error adding user:", err)
-		return false
+		return -1, fmt.Errorf("ERROR: %s",err)
 	}
-	return true
+	return id,nil
 }
 
 func UpdateUser(id int, user model.UserModel) bool {
