@@ -97,3 +97,36 @@ func DeleteUser(id int) bool {
 	log.Printf("Deleted %d rows fromusers", deletedRow)
 	return true
 }
+
+func UsersInRoom(roomId string) ([]model.UserModel, error) {
+	// query := "SELECT * FROM users WHERE roomId"
+	query := "SELECT userid FROM room_user WHERE roomid = $1"
+
+	rows, err := db.Query(query, roomId)
+
+	if err != nil {
+		return nil, fmt.Errorf("error getting all users in room: %v", err)
+	}
+	defer rows.Close()
+	var users []model.UserModel
+
+	for rows.Next() {
+		var userId int
+		err := rows.Scan(&userId)
+
+		if err != nil {
+			return nil, fmt.Errorf("error scanning room_user row: %v", err)
+		}
+
+		query := "SELECT * FROM users WHERE id = $1"
+
+		var user model.UserModel
+		db.QueryRow(query, userId).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken)
+		users = append(users, user)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over room_user rows: %v", err)
+	}
+	return users, nil
+}
