@@ -45,9 +45,9 @@ func DeleteRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := database.AddRoom(roomId)
+	err := database.DeleteRoom(roomId)
 
-	if !result {
+	if err!=nil {
 		fmt.Printf("failed to delete room id= %v", roomId)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("failed to delete room")

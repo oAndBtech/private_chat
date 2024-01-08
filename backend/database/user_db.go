@@ -43,7 +43,7 @@ func UpdateUser(id int, user model.UserModel) bool {
 
 	for k, v := range fields {
 		if v != nil && v != "" {
-			setStatements = append(setStatements, fmt.Sprintf("%s = %d", k, index))
+			setStatements = append(setStatements, fmt.Sprintf("%s = $%d", k, index))
 			values = append(values, v)
 			index++
 		}
@@ -54,20 +54,18 @@ func UpdateUser(id int, user model.UserModel) bool {
 		return false
 	}
 
-	query := fmt.Sprintf(`UPDATE users SET %s WHERE id $%d`, strings.Join(setStatements, ", "), index)
-
+	query := fmt.Sprintf("UPDATE users SET %s WHERE id = $%d", strings.Join(setStatements, ", "), index)
 	values = append(values, id)
 
 	res, err := db.Exec(query, values...)
 	if err != nil {
-		fmt.Printf("Error while updating user id=%d, err: %v", id, err)
+		fmt.Printf("Error while updating user id=%d, err: %v\n", id, err)
 		return false
 	}
 
 	affectedRows, err := res.RowsAffected()
-
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Error getting affected rows: %v\n", err)
 		return false
 	}
 
