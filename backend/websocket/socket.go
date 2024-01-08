@@ -3,6 +3,7 @@ package websocket
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -22,8 +23,22 @@ var (
 func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	userID := r.URL.Query().Get("userId")
 	roomID := r.URL.Query().Get("roomId")
-	roomExists, err := database.VerifyRoomId(roomID)
 
+	userIdInteger, err := strconv.Atoi(userID) //convert to int
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	//check user exists in db or not
+	userExists := database.VerifyUser(userIdInteger)
+	if !userExists {
+		fmt.Println("WRONG USER ID")
+		return
+	}
+
+	//check room id exists
+	roomExists, err := database.VerifyRoomId(roomID)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -43,6 +58,9 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("%v User connected to the room: %v\n", userID, roomID)
 
+	//if user not in db then add him to db by roomID
+	database.AddUserInRoom(userIdInteger, roomID)
+	//register to live room
 	registerClient(roomID, conn)
 
 	for {
@@ -53,6 +71,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		}
 
 		broadcast(roomID, conn, msg)
+		storeMessage(userIdInteger, roomID, msg)
 	}
 }
 
@@ -82,5 +101,12 @@ func broadcast(roomID string, sender *websocket.Conn, message []byte) {
 				delete(clients[roomID], conn)
 			}
 		}
+	}
+}
+
+func storeMessage(senderId int, roomId string, msg []byte) {
+	res := database.AddMessage(senderId, roomId, msg)
+	if !res{
+		fmt.Println("failed to add msg in db")
 	}
 }
