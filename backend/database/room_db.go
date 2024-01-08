@@ -2,15 +2,14 @@ package database
 
 import (
 	"fmt"
-	"log"
 )
 
 func AddRoom(roomId string) bool {
-	query := "INSERT INTO rooms (roomid) VALUES $1"
+	query := "INSERT INTO rooms (roomid) VALUES ($1)"
 
 	_, err := db.Exec(query, roomId)
 	if err != nil {
-		log.Fatalf("Error while adding room,%v", err)
+		fmt.Printf("Error while adding room,%v", err)
 		return false
 	}
 	return true

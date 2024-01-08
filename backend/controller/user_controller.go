@@ -2,7 +2,7 @@ package controller
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -16,7 +16,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	userId, ok := params["id"]
 	if !ok {
-		log.Fatal("Please provide a valid id")
+		fmt.Println("Please provide a valid id")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("Please provide a valid id")
 		return
@@ -25,7 +25,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	integerId, err := strconv.Atoi(userId)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
@@ -34,9 +34,10 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	user, err := database.User(integerId)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("failed to get details of user")
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -100,7 +101,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	
+
 	params := mux.Vars(r)
 	idStr, ok := params["id"]
 	if !ok {
@@ -117,7 +118,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := database.DeleteUser(id)
-	if !result{
+	if !result {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("failed to delete user")
 		return
@@ -125,28 +126,4 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode("Successfully user deleted")
-}
-
-func AllUserInRoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	params := mux.Vars(r)
-	roomId, ok := params["id"]
-	if !ok {
-		log.Fatal("Please provide a valid id")
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Please provide a valid id")
-		return
-	}
-
-	users, err := database.UsersInRoom(roomId)
-	if err != nil {
-		log.Fatal("Error while fetching all users in a room")
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("failed to get all users")
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(users)
 }

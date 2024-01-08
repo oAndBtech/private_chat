@@ -25,9 +25,9 @@ func AddUser(user model.UserModel) (int, error) {
 	err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken).Scan(&id)
 	if err != nil {
 		fmt.Println("Error adding user:", err)
-		return -1, fmt.Errorf("ERROR: %s",err)
+		return -1, fmt.Errorf("ERROR: %s", err)
 	}
-	return id,nil
+	return id, nil
 }
 
 func UpdateUser(id int, user model.UserModel) bool {
@@ -60,14 +60,14 @@ func UpdateUser(id int, user model.UserModel) bool {
 
 	res, err := db.Exec(query, values...)
 	if err != nil {
-		log.Fatalf("Error while updating user id=%d, err: %v", id, err)
+		fmt.Printf("Error while updating user id=%d, err: %v", id, err)
 		return false
 	}
 
 	affectedRows, err := res.RowsAffected()
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		return false
 	}
 
@@ -85,13 +85,13 @@ func DeleteUser(id int) bool {
 	result, err := db.Exec(query, id)
 
 	if err != nil {
-		log.Fatalf("Error while deleting user id= %d, err: %v", id, err)
+		fmt.Printf("Error while deleting user id= %d, err: %v", id, err)
 		return false
 	}
 
 	deletedRow, err := result.RowsAffected()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		return false
 	}
 
