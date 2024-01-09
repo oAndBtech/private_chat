@@ -84,8 +84,13 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		content := jsonMsg.Content
-		
+		// content := jsonMsg.Content
+		var content string
+		if err := json.Unmarshal([]byte(jsonMsg.Content), &content); err != nil {
+			fmt.Println(err)
+			break
+		}
+
 		storeMessage(userIdInteger, roomID, []byte(content))
 		broadcast(roomID, conn, msg)
 	}
