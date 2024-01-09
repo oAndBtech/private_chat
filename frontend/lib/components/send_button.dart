@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SendButton extends StatelessWidget {
-  const SendButton({super.key});
+  const SendButton({
+    required this.send,
+    super.key
+    });
+
+    final VoidCallback send; 
 
   @override
   Widget build(BuildContext context) {
@@ -9,6 +14,7 @@ class SendButton extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
 
     return InkWell(
+      onTap: send,
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       child: Container(
