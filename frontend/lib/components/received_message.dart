@@ -20,11 +20,12 @@ class ReceivedMessage extends StatefulWidget {
 
 class _ReceivedMessageState extends State<ReceivedMessage> {
 
-  UserModel? user;
+  UserModel user = UserModel(
+        name: "bhaskar", phone: "98465", id: 1, fcmtoken: "xdrcvftgy");
 
-  fetchUser() {
-    //TODO: call api (/user/message.sender)
-  }
+  // fetchUser() {
+  //   //TODO: call api (/user/message.sender)
+  // }
 
   String formatTimestamp(String timestampString) {
     DateTime timestamp = DateTime.parse(timestampString);
@@ -77,7 +78,7 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
                     color: Color(0xff000000)),
               ),
               Text(
-                formatTimestamp(widget.message.timestamp),
+                formatTimestamp(widget.message.timestamp ?? DateTime.now().toString()),
                 style: GoogleFonts.montserrat(
                     fontSize: 10,
                     fontWeight: FontWeight.w400,

@@ -3,7 +3,7 @@ class MessageModel {
   final int sender;
   final String receiver;
   final bool istext;
-  final String timestamp;
+  final String? timestamp;
   final List<int> content; 
 
   MessageModel({
@@ -11,7 +11,7 @@ class MessageModel {
     required this.sender,
     required this.receiver,
     required this.istext,
-    required this.timestamp,
+    this.timestamp,
     required this.content,
   });
 }

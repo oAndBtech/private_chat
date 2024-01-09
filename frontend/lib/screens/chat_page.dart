@@ -4,6 +4,7 @@ import 'package:private_chat/components/bottom_component.dart';
 import 'package:private_chat/components/message_list.dart';
 import 'package:private_chat/models/message_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
+import 'package:private_chat/providers/room_provider.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({super.key});
@@ -14,6 +15,15 @@ class ChatPage extends ConsumerStatefulWidget {
 
 class _ChatPageState extends ConsumerState<ChatPage> {
   // List<MessageModel> messages =[];
+ addRoomId(){
+    ref.read(roomProvider.notifier).addRoom("aa45");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // addRoomId();
+  }
 
   @override
   Widget build(BuildContext context) {

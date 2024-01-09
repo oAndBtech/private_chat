@@ -13,7 +13,7 @@ class MessageList extends StatefulWidget {
 }
 
 class _MessageListState extends State<MessageList> {
-  int senderId = 7870;
+  int senderId = 1;
 
   @override
   Widget build(BuildContext context) {

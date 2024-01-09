@@ -55,14 +55,6 @@ class _SentMessageState extends State<SentMessage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                user!.name,
-                style: GoogleFonts.montserrat(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: -0.2,
-                    color: Colors.blue),
-              ),
-              Text(
                 msg,
                 style: GoogleFonts.montserrat(
                     fontSize: 16,
@@ -71,7 +63,8 @@ class _SentMessageState extends State<SentMessage> {
                     color: Color(0xff000000)),
               ),
               Text(
-                formatTimestamp(widget.message.timestamp),
+                formatTimestamp(
+                    widget.message.timestamp ?? DateTime.now().toString()),
                 style: GoogleFonts.montserrat(
                     fontSize: 10,
                     fontWeight: FontWeight.w400,
