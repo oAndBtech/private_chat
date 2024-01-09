@@ -1,6 +1,7 @@
 package websocket
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -9,6 +10,12 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/oAndBtech/private_chat/backend/database"
 )
+
+type Message struct {
+	ID      int    `json:"sender"`
+	Content string `json:"content"`
+	IsText  bool   `json:"istext"`
+}
 
 var (
 	upgrader = websocket.Upgrader{
@@ -70,8 +77,17 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
+		var jsonMsg Message
+		err = json.Unmarshal(msg, &jsonMsg)
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+
+		content := jsonMsg.Content
+		
+		storeMessage(userIdInteger, roomID, []byte(content))
 		broadcast(roomID, conn, msg)
-		storeMessage(userIdInteger, roomID, msg)
 	}
 }
 
@@ -106,7 +122,7 @@ func broadcast(roomID string, sender *websocket.Conn, message []byte) {
 
 func storeMessage(senderId int, roomId string, msg []byte) {
 	res := database.AddMessage(senderId, roomId, msg)
-	if !res{
+	if !res {
 		fmt.Println("failed to add msg in db")
 	}
 }
