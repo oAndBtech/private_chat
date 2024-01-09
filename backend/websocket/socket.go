@@ -12,7 +12,7 @@ import (
 )
 
 type Message struct {
-	ID      int    `json:"sender"`
+	Sender  string `json:"sender"`
 	Content string `json:"content"`
 	IsText  bool   `json:"istext"`
 }
@@ -77,26 +77,12 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		fmt.Printf("message: %s", msg)
-
 		var jsonMsg Message
 		err = json.Unmarshal(msg, &jsonMsg)
 		if err != nil {
 			fmt.Println(err)
 			break
 		}
-
-		fmt.Printf("jsonMsg: %v", jsonMsg)
-
-		// content := jsonMsg.Content
-		// var content string
-		// if err := json.Unmarshal([]byte(jsonMsg.Content), &content); err != nil {
-		// 	fmt.Println(err)
-		// 	break
-		// }
-		// content = 
-
-		// fmt.Printf("CONTENT: %s", content)
 
 		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content))
 		broadcast(roomID, conn, msg)
