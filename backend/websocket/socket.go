@@ -9,12 +9,16 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/oAndBtech/private_chat/backend/database"
+
+	"time"
 )
 
 type Message struct {
-	Sender  string `json:"sender"`
-	Content string `json:"content"`
-	IsText  bool   `json:"istext"`
+	ID        int    `json:"senderId"`
+	Sender    string `json:"sender"`
+	Content   string `json:"content"`
+	IsText    bool   `json:"istext"`
+	Timestamp string   `json:"timestamp"`
 }
 
 var (
@@ -84,8 +88,28 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
+		location, err := time.LoadLocation("Asia/Kolkata")
+		if err != nil {
+			fmt.Println("Error loading time zone:", err)
+			return
+		}
+		currentTime := time.Now().In(location)
+		senderName, err := database.UsersName(userIdInteger)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		broadcastMsg := Message{
+			ID:        userIdInteger,
+			Sender:    senderName,
+			Content:   jsonMsg.Content,
+			IsText:    jsonMsg.IsText,
+			Timestamp: currentTime.Format(time.RFC3339),
+		}
+
 		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content))
-		broadcast(roomID, conn, msg)
+		broadcast(roomID, conn, []byte(broadcastMsg.Content))
 	}
 }
 
