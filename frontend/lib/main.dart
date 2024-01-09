@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:private_chat/components/custom_textfield.dart';
 import 'package:private_chat/components/sent_message.dart';
 import 'package:private_chat/screens/chat_page.dart';
 
-void main() {
+void main() async {
+   await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
