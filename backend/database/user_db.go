@@ -132,10 +132,10 @@ func UsersInRoom(roomId string) ([]model.UserModel, error) {
 
 func UsersName(userId int) (string, error) {
 	query := "SELECT name FROM users WHERE id = $1"
-	var user model.UserModel
-	err := db.QueryRow(query, userId).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken)
+	var userName string
+	err := db.QueryRow(query, userId).Scan(&userName)
 	if err != nil {
-		return user.Name, fmt.Errorf("error while fetching users name: %s", err)
+		return userName, fmt.Errorf("error while fetching users name: %s", err)
 	}
-	return user.Name, nil
+	return userName, nil
 }
