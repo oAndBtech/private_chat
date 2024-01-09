@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SendButton extends StatelessWidget {
-  const SendButton({
-    required this.send,
-    super.key
-    });
+  const SendButton({required this.send, super.key});
 
-    final VoidCallback send; 
+  final VoidCallback send;
 
   @override
   Widget build(BuildContext context) {
-
     double width = MediaQuery.of(context).size.width;
 
     return InkWell(
@@ -18,13 +14,19 @@ class SendButton extends StatelessWidget {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       child: Container(
-        width: width * 0.135,
-        height: width * 0.135,
+        width: 52,
+        height: 52,
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Color.fromARGB(255, 50, 153, 101)
-        ),
-        child: Center(child: Icon(Icons.send,color: Color(0xff000000).withOpacity(0.8),)),
+            shape: BoxShape.circle, color: Color.fromARGB(255, 50, 153, 101)),
+        child: Center(
+            child: Padding(
+          padding: const EdgeInsets.only(left: 4.0),
+          child: Icon(
+            Icons.send_rounded,
+            size: 30,
+            color: Color(0xff000000).withOpacity(0.8),
+          ),
+        )),
       ),
     );
   }

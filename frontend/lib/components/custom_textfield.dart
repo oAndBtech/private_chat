@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomTextfield extends StatelessWidget {
-  const CustomTextfield({Key? key});
-
+  const CustomTextfield({
+    required this.messageController,
+    Key? key
+    });
+  final TextEditingController messageController;
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    final TextEditingController messageController = TextEditingController();
 
     return Container(
       width: width * 0.8,
@@ -21,10 +23,12 @@ class CustomTextfield extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.add),
-            color: Colors.grey,
+          Padding(
+            padding: const EdgeInsets.only(left: 8, bottom: 11, right: 6),
+            child: Icon(
+              Icons.add,
+              color: Colors.grey,
+            ),
           ),
           Expanded(
             child: TextField(
@@ -46,7 +50,8 @@ class CustomTextfield extends StatelessWidget {
                 letterSpacing: -0.2,
                 color: Color(0xffFFFFFF),
               ),
-              maxLines: null,
+              minLines: 1,
+              maxLines: 6,
             ),
           ),
         ],
