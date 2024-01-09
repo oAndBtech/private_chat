@@ -89,15 +89,16 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("jsonMsg: %v", jsonMsg)
 
 		// content := jsonMsg.Content
-		var content string
-		if err := json.Unmarshal([]byte(jsonMsg.Content), &content); err != nil {
-			fmt.Println(err)
-			break
-		}
+		// var content string
+		// if err := json.Unmarshal([]byte(jsonMsg.Content), &content); err != nil {
+		// 	fmt.Println(err)
+		// 	break
+		// }
+		// content = 
 
-		fmt.Printf("CONTENT: %s", content)
+		// fmt.Printf("CONTENT: %s", content)
 
-		storeMessage(userIdInteger, roomID, []byte(content))
+		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content))
 		broadcast(roomID, conn, msg)
 	}
 }
