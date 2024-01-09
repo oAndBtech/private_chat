@@ -13,14 +13,14 @@ class _BottomComponentState extends State<BottomComponent> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         CustomTextfield(
           messageController: widget.messageController,
         ),
         Padding(
-          padding: const EdgeInsets.only(bottom: 11),
+          padding: const EdgeInsets.only(left: 10, bottom: 11),
           child: SendButton(send: () {}),
         )
       ],
