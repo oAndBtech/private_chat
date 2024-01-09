@@ -18,7 +18,7 @@ type Message struct {
 	Sender    string `json:"sender"`
 	Content   string `json:"content"`
 	IsText    bool   `json:"istext"`
-	Timestamp string   `json:"timestamp"`
+	Timestamp string `json:"timestamp"`
 }
 
 var (
@@ -108,8 +108,14 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			Timestamp: currentTime.Format(time.RFC3339),
 		}
 
+		broadcastJSON, err := json.Marshal(broadcastMsg)
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+
 		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content))
-		broadcast(roomID, conn, []byte(broadcastMsg.Content))
+		broadcast(roomID, conn, broadcastJSON)
 	}
 }
 
