@@ -77,6 +77,8 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
+		fmt.Printf("message: %s", msg)
+
 		var jsonMsg Message
 		err = json.Unmarshal(msg, &jsonMsg)
 		if err != nil {
@@ -84,12 +86,16 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
+		fmt.Printf("jsonMsg: %v", jsonMsg)
+
 		// content := jsonMsg.Content
 		var content string
 		if err := json.Unmarshal([]byte(jsonMsg.Content), &content); err != nil {
 			fmt.Println(err)
 			break
 		}
+
+		fmt.Printf("CONTENT: %s", content)
 
 		storeMessage(userIdInteger, roomID, []byte(content))
 		broadcast(roomID, conn, msg)
