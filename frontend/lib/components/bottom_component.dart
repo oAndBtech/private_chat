@@ -33,11 +33,11 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
 
     if (text.isNotEmpty && user != null && roomId != null && user.id != null) {
       List<int> contentByte = utf8.encode(text);
-      MessageModelSender msg = MessageModelSender(
-          istext: true,
-          content: text);
+      // MessageModel msg = MessageModel(
+      //     istext: true,
+      //     content: text);
 
-      SocketService().sendMessage(msg, widget.socket);
+      SocketService().sendMessage(text, widget.socket,true);//TODO: change this
 
       MessageModel sentMsg = MessageModel(
           sender: user.id!,

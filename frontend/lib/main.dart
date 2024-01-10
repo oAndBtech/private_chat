@@ -9,8 +9,8 @@ import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/screens/chat_page.dart';
 
 void main() async {
-  //  await dotenv.load(fileName: ".env");
-  runApp(const MyApp());
+   await dotenv.load(fileName: ".env");
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerStatefulWidget {
