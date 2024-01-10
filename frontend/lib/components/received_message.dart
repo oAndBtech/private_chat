@@ -28,7 +28,7 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
   // }
 
   String formatTimestamp(String timestampString) {
-    DateTime timestamp = DateTime.parse(timestampString);
+    DateTime timestamp = DateTime.parse(timestampString).toLocal();
     DateTime currentDate = DateTime.now();
     if (timestamp.year == currentDate.year &&
         timestamp.month == currentDate.month &&

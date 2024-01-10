@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:private_chat/components/appbar.dart';
 import 'package:private_chat/components/bottom_component.dart';
 import 'package:private_chat/components/message_list.dart';
 import 'package:private_chat/models/message_model.dart';
@@ -66,11 +68,17 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
     return Scaffold(
         backgroundColor: const Color(0xff282C34),
-        appBar: AppBar(),
+        appBar: AppBar(
+          elevation: 0,
+        toolbarHeight: 0.0,
+        systemOverlayStyle:
+             const SystemUiOverlayStyle(statusBarColor: Color.fromARGB(255, 55, 55, 55)),
+      ),
         body: SafeArea(
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              const CustomAppBar(),
               Expanded(child: MessageList(messages: messages)),
               BottomComponent(socket: socket)
             ],

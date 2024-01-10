@@ -17,14 +17,12 @@ class _MessageListState extends State<MessageList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView.builder(
-          itemCount: widget.messages.length,
-          itemBuilder: (context, index) {
-            return widget.messages[index].sender == senderId
-                ? SentMessage(message: widget.messages[index])
-                : ReceivedMessage(message: widget.messages[index]);
-          }),
-    );
+    return ListView.builder(
+        itemCount: widget.messages.length,
+        itemBuilder: (context, index) {
+          return widget.messages[index].sender == senderId
+              ? SentMessage(message: widget.messages[index])
+              : ReceivedMessage(message: widget.messages[index]);
+        });
   }
 }
