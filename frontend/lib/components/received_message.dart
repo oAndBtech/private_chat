@@ -20,8 +20,8 @@ class ReceivedMessage extends StatefulWidget {
 
 class _ReceivedMessageState extends State<ReceivedMessage> {
 
-  UserModel user = UserModel(
-        name: "bhaskar", phone: "98465", id: 1, fcmtoken: "xdrcvftgy");
+  // UserModel user = UserModel(
+  //       name: "bhaskar", phone: "98465", id: 1, fcmtoken: "xdrcvftgy");
 
   // fetchUser() {
   //   //TODO: call api (/user/message.sender)
@@ -62,7 +62,7 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                user!.name,
+                widget.message.sendername!,
                 style: GoogleFonts.montserrat(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,

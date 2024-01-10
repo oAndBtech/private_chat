@@ -40,3 +40,23 @@ func DeleteRoom(roomId string) error {
 
 	return nil
 }
+
+func VerifyRoomId(roomId string) (bool, error) {
+	query := "SELECT EXISTS(SELECT 1 FROM rooms WHERE roomid = $1)"
+	var exists bool
+	err := db.QueryRow(query, roomId).Scan(&exists)
+	if err != nil {
+		return false, fmt.Errorf("error verifying room ID: %v", err)
+	}
+	return exists, nil
+}
+
+func CheckUserIsInRoom(userId int, roomId string) (bool, error) {
+	query := "SELECT EXISTS(SELECT 1 FROM room_user WHERE userid = $1 AND roomid = $2)"
+	var exists bool
+	err := db.QueryRow(query, userId, roomId).Scan(&exists)
+	if err != nil {
+		return false, fmt.Errorf("error checking user in room: %v", err)
+	}
+	return exists, nil
+}

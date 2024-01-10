@@ -5,14 +5,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:private_chat/components/custom_textfield.dart';
 import 'package:private_chat/components/send_button.dart';
 import 'package:private_chat/models/message_model.dart';
+import 'package:private_chat/models/msg_model_sender.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
 import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/providers/user_provider.dart';
+import 'package:private_chat/services/socket_services.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 class BottomComponent extends ConsumerStatefulWidget {
-  const BottomComponent({super.key});
+  const BottomComponent({super.key, this.socket});
   // final TextEditingController messageController;
+  final WebSocket? socket;
   @override
   ConsumerState<BottomComponent> createState() => _BottomComponentState();
 }
@@ -21,26 +25,30 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
   TextEditingController messageController = TextEditingController();
 
   void sendMessage() {
-    print("HELLO WORLD");
-    // String? roomId = ref.watch(roomProvider);
-    String roomId = "AA45";
-    // UserModel? user = ref.watch(userProvider);
     String text = messageController.text.trim();
+
+    String roomId = "AA45";
     UserModel user = UserModel(
         name: "bhaskar", phone: "98465", id: 1, fcmtoken: "xdrcvftgy");
 
-    print(user!.id);
-
     if (text.isNotEmpty && user != null && roomId != null && user.id != null) {
-    print("HELLO WORLD");
       List<int> contentByte = utf8.encode(text);
-      MessageModel msg = MessageModel(
-          sender: user.id!,
-          receiver: roomId,
+      MessageModelSender msg = MessageModelSender(
           istext: true,
-          content: contentByte);
-      ref.read(messageProvider.notifier).addMessage(msg);
+          content: text);
+
+      SocketService().sendMessage(msg, widget.socket);
+
+      MessageModel sentMsg = MessageModel(
+          sender: user.id!,
+          receiver: "",
+          istext: true,
+          content: contentByte,
+          timestamp: DateTime.now().toString());
+
+      ref.read(messageProvider.notifier).addMessage(sentMsg);
     }
+    messageController.clear();
   }
 
   @override

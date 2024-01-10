@@ -40,7 +40,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK) 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(user)
 }
 
@@ -52,6 +52,16 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("Invalid JSON format")
+	}
+
+	//TODO: check usr is already there in db
+
+	userAlreadyInDb, id := database.CheckUserExistsDB(user.Phone)
+
+	if userAlreadyInDb {
+		fmt.Println("USERS PHONE NUMBER IS ALREADY IN DB")
+		w.WriteHeader(http.StatusResetContent) // it will return 205
+		json.NewEncoder(w).Encode()
 	}
 
 	userId, err := database.AddUser(user)

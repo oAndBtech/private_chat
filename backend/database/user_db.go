@@ -139,3 +139,37 @@ func UsersName(userId int) (string, error) {
 	}
 	return userName, nil
 }
+
+func VerifyUser(userId int) bool {
+	query := "SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)"
+	var exists bool
+
+	err := db.QueryRow(query, userId).Scan(&exists)
+	if err != nil {
+		fmt.Printf("error verifying user id = %v, error: %v", userId, err)
+		return false
+	}
+	return exists
+}
+
+func CheckUserExistsDB(phone string) (bool, int) {
+	query := "SELECT EXISTS(SELECT 1 FROM users WHERE phone = $1)"
+	var exists bool
+	var userId int
+
+	err := db.QueryRow(query, phone).Scan(&exists)
+	if err != nil {
+		fmt.Printf("error checking users phone = %v, error: %v", phone, err)
+		return false, -1
+	}
+	if exists {
+		query = "SELECT id FROM users WHERE phone = $1"
+		err := db.QueryRow(query, phone).Scan(&userId)
+		if err != nil {
+			fmt.Printf("error %v", err)
+			return false, -1
+		}
+		return true, userId
+	}
+	return false, -1
+}
