@@ -88,12 +88,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		location, err := time.LoadLocation("Asia/Kolkata")
-		if err != nil {
-			fmt.Println("Error loading time zone:", err)
-			return
-		}
-		currentTime := time.Now().In(location)
+		currentTime := time.Now()
 		senderName, err := database.UsersName(userIdInteger)
 		if err != nil {
 			fmt.Println(err)
@@ -114,7 +109,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content))
+		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content),jsonMsg.IsText, senderName)
 		broadcast(roomID, conn, broadcastJSON)
 	}
 }
@@ -148,8 +143,8 @@ func broadcast(roomID string, sender *websocket.Conn, message []byte) {
 	}
 }
 
-func storeMessage(senderId int, roomId string, msg []byte) {
-	res := database.AddMessage(senderId, roomId, msg)
+func storeMessage(senderId int, roomId string, msg []byte, isText bool, senderName string) {
+	res := database.AddMessage(senderId, roomId, msg, isText, senderName)
 	if !res {
 		fmt.Println("failed to add msg in db")
 	}
