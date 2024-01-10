@@ -56,22 +56,22 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 
 	//TODO: check usr is already there in db
 
-	userAlreadyInDb, id := database.CheckUserExistsDB(user.Phone)
+	userAlreadyInDb, existedUser := database.CheckUserExistsDB(user.Phone)
 
 	if userAlreadyInDb {
 		fmt.Println("USERS PHONE NUMBER IS ALREADY IN DB")
 		w.WriteHeader(http.StatusResetContent) // it will return 205
-		json.NewEncoder(w).Encode()
+		json.NewEncoder(w).Encode(existedUser)
 	}
 
-	userId, err := database.AddUser(user)
+	addedUser, err := database.AddUser(user)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("failed to add user")
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]int{"id": userId})
+	json.NewEncoder(w).Encode(addedUser)
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {

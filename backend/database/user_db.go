@@ -18,17 +18,24 @@ func User(id int) (model.UserModel, error) {
 	return user, nil
 }
 
-func AddUser(user model.UserModel) (int, error) {
-	query := "INSERT INTO users (name, phone, fcmtoken) VALUES ($1, $2, $3) RETURNING id"
+func AddUser(user model.UserModel) (model.UserModel, error) {
+    query := "INSERT INTO users (name, phone, fcmtoken) VALUES ($1, $2, $3) RETURNING *"
 
-	var id int
-	err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken).Scan(&id)
-	if err != nil {
-		fmt.Println("Error adding user:", err)
-		return -1, fmt.Errorf("ERROR: %s", err)
-	}
-	return id, nil
+    var newUser model.UserModel
+    err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken).Scan(
+        &newUser.ID,
+        &newUser.Name,
+        &newUser.Phone,
+        &newUser.FcmToken,
+    )
+    if err != nil {
+        fmt.Println("Error adding user:", err)
+        return model.UserModel{}, fmt.Errorf("ERROR: %s", err)
+    }
+
+    return newUser, nil
 }
+
 
 func UpdateUser(id int, user model.UserModel) bool {
 	fields := map[string]interface{}{
@@ -152,24 +159,24 @@ func VerifyUser(userId int) bool {
 	return exists
 }
 
-func CheckUserExistsDB(phone string) (bool, int) {
+func CheckUserExistsDB(phone string) (bool, model.UserModel) {
 	query := "SELECT EXISTS(SELECT 1 FROM users WHERE phone = $1)"
 	var exists bool
-	var userId int
+	var user model.UserModel
 
 	err := db.QueryRow(query, phone).Scan(&exists)
 	if err != nil {
 		fmt.Printf("error checking users phone = %v, error: %v", phone, err)
-		return false, -1
+		return false, user
 	}
 	if exists {
-		query = "SELECT id FROM users WHERE phone = $1"
-		err := db.QueryRow(query, phone).Scan(&userId)
+		query = "SELECT * FROM users WHERE phone = $1"
+		err := db.QueryRow(query, phone).Scan(&user)
 		if err != nil {
 			fmt.Printf("error %v", err)
-			return false, -1
+			return false, user
 		}
-		return true, userId
+		return true, user
 	}
-	return false, -1
+	return false, user
 }

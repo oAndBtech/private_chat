@@ -40,3 +40,9 @@ func AllMessagesInRoom(roomId string) ([]model.MessageModel, error) {
 	}
 	return messages, nil
 }
+
+//TODO:ADD THIS FEATURE
+
+// func DeleteMessage()  {
+// 	//
+// }
