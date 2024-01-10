@@ -171,7 +171,7 @@ func CheckUserExistsDB(phone string) (bool, model.UserModel) {
 	}
 	if exists {
 		query = "SELECT * FROM users WHERE phone = $1"
-		err := db.QueryRow(query, phone).Scan(&user)
+		err := db.QueryRow(query, phone).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken)
 		if err != nil {
 			fmt.Printf("error %v", err)
 			return false, user
