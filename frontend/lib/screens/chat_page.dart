@@ -35,7 +35,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   buildSocketConnection() {
     String roomId = 'abc'; //TODO: change this
-    WebSocket ws = SocketService().buildSocketConnection(roomId, 1);
+    WebSocket ws = SocketService().buildSocketConnection(roomId, 2);
     setState(() {
       socket = ws;
     });

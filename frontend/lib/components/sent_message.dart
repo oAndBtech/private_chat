@@ -41,6 +41,9 @@ class _SentMessageState extends State<SentMessage> {
       alignment: Alignment.centerRight,
       child: Container(
         // width: width * 0.65,
+        margin: EdgeInsets.fromLTRB(0, 8, 8, 0),
+        constraints:
+            BoxConstraints(maxWidth: width * 0.65, minWidth: width * 0.15),
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(18),
@@ -60,16 +63,19 @@ class _SentMessageState extends State<SentMessage> {
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
                     letterSpacing: -0.2,
-                    color: Color(0xff000000)),
+                    color: const Color(0xff000000)),
               ),
-              Text(
-                formatTimestamp(
-                    widget.message.timestamp ?? DateTime.now().toString()),
-                style: GoogleFonts.montserrat(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: -0.2,
-                    color: Color.fromARGB(255, 121, 121, 121)),
+              Padding(
+                padding: EdgeInsets.only(left: width * 0.15),
+                child: Text(
+                  formatTimestamp(
+                      widget.message.timestamp ?? DateTime.now().toString()),
+                  style: GoogleFonts.montserrat(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: -0.2,
+                      color: const Color.fromARGB(255, 121, 121, 121)),
+                ),
               )
             ],
           ),

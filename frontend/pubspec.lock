@@ -335,7 +335,7 @@ packages:
       sha256: afe077240a270dcfd2aafe77602b4113645af95d0ad31128cc02bce5ac5d5152
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.4-beta"
+    version: "0.3.0"
   web_socket_channel:
     dependency: transitive
     description:
@@ -352,7 +352,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.0"
-    version: "0.3.0"
   win32:
     dependency: transitive
     description:

@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:private_chat/models/message_model.dart';
 import 'package:private_chat/models/user_model.dart';
 
+//TODO: timestamp alignment
+
 class ReceivedMessage extends StatefulWidget {
   const ReceivedMessage(
       {
@@ -48,6 +50,11 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
       alignment: Alignment.centerLeft,
       child: Container(
         // width: width * 0.65,
+        margin: EdgeInsets.fromLTRB(8, 8, 0, 0),
+        constraints: BoxConstraints(
+          minWidth: width*0.15,
+          maxWidth: width*0.65
+        ),
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
               bottomRight: Radius.circular(18),
@@ -56,7 +63,7 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
           color: Color.fromARGB(255, 208, 236, 213),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +71,7 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
               Text(
                 widget.message.sendername!,
                 style: GoogleFonts.montserrat(
-                    fontSize: 15,
+                    fontSize: 13,
                     fontWeight: FontWeight.w500,
                     letterSpacing: -0.2,
                     color: Colors.blue),
@@ -77,13 +84,16 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
                     letterSpacing: -0.2,
                     color: Color(0xff000000)),
               ),
-              Text(
-                formatTimestamp(widget.message.timestamp ?? DateTime.now().toString()),
-                style: GoogleFonts.montserrat(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: -0.2,
-                    color: Color.fromARGB(255, 121, 121, 121)),
+              Padding(
+                padding: EdgeInsets.only(left: width*0.15),
+                child: Text(
+                  formatTimestamp(widget.message.timestamp ?? DateTime.now().toString()),
+                  style: GoogleFonts.montserrat(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: -0.2,
+                      color: Color.fromARGB(255, 121, 121, 121)),
+                ),
               )
             ],
           ),
