@@ -3,9 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CustomTextfield extends StatelessWidget {
   const CustomTextfield({
+    super.key,
     required this.messageController,
-    Key? key
-    });
+  });
   final TextEditingController messageController;
 
   @override
@@ -14,17 +14,17 @@ class CustomTextfield extends StatelessWidget {
 
     return Container(
       width: width * 0.8,
-      margin: EdgeInsets.only(top: 12, bottom: 12),
+      margin: const EdgeInsets.only(top: 12, bottom: 12),
       decoration: BoxDecoration(
-        color: Color(0xff000000).withOpacity(0.6),
+        color: const Color(0xff000000).withOpacity(0.6),
         borderRadius: BorderRadius.circular(20),
       ),
       // padding: EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8, bottom: 11, right: 6),
+          const Padding(
+            padding: EdgeInsets.only(left: 8, bottom: 11, right: 6),
             child: Icon(
               Icons.add,
               color: Colors.grey,
@@ -42,13 +42,13 @@ class CustomTextfield extends StatelessWidget {
                   color: Colors.grey,
                 ),
                 border: InputBorder.none,
-                focusColor: Color(0xffFFFFFF),
+                focusColor: const Color(0xffFFFFFF),
               ),
               style: GoogleFonts.montserrat(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
                 letterSpacing: -0.2,
-                color: Color(0xffFFFFFF),
+                color: const Color(0xffFFFFFF),
               ),
               minLines: 1,
               maxLines: 6,

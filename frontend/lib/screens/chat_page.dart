@@ -7,9 +7,7 @@ import 'package:private_chat/components/appbar.dart';
 import 'package:private_chat/components/bottom_component.dart';
 import 'package:private_chat/components/message_list.dart';
 import 'package:private_chat/models/message_model.dart';
-import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
-import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/services/api_services.dart';
 import 'package:private_chat/services/socket_services.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -22,22 +20,17 @@ class ChatPage extends ConsumerStatefulWidget {
 }
 
 class _ChatPageState extends ConsumerState<ChatPage> {
-  addRoomId() {
-    ref.read(roomProvider.notifier).addRoom("aa45");
-  }
-
   WebSocket? socket;
 
   @override
   void initState() {
     super.initState();
-    // addRoomId();
     buildSocketConnection();
     fetchAllMessages();
   }
 
   buildSocketConnection() {
-    String roomId = 'abc'; //TODO: change this
+    String roomId = 'aa45'; //TODO: change this
     WebSocket ws = SocketService().buildSocketConnection(roomId, 1);
     setState(() {
       socket = ws;
@@ -55,6 +48,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         List<int> content = utf8.encode(jsonResponse["content"]);
 
         MessageModel receivedMessage = MessageModel(
+            id: jsonResponse["senderId"],
             timestamp: jsonResponse["timestamp"],
             sendername: jsonResponse["sender"],
             istext: jsonResponse["istext"],
@@ -66,7 +60,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   fetchAllMessages() async {
-    String roomId = 'abc'; //TODO: hardcoded
+    String roomId = 'aa45'; //TODO: hardcoded
     List<MessageModel> messages =
         await ApiService().messagesInRoom(roomId) ?? [];
 

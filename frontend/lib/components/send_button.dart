@@ -24,7 +24,7 @@ class SendButton extends StatelessWidget {
           child: Icon(
             Icons.send_rounded,
             size: 30,
-            color: Color(0xff000000).withOpacity(0.8),
+            color: const Color(0xff000000).withOpacity(0.8),
           ),
         )),
       ),

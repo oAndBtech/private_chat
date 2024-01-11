@@ -75,8 +75,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     });
   }
 
-  handleMessage(RemoteMessage message) async {
-  }
+  handleMessage(RemoteMessage message) async {}
 
   @override
   Widget build(BuildContext context) {

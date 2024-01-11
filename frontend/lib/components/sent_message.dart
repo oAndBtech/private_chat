@@ -42,7 +42,7 @@ class _SentMessageState extends State<SentMessage> {
       child: Stack(
         children: [
           Container(
-            margin: EdgeInsets.fromLTRB(0, 8, 8, 0),
+            margin: const EdgeInsets.fromLTRB(0, 8, 8, 0),
             constraints:
                 BoxConstraints(maxWidth: width * 0.65, minWidth: width * 0.25),
             decoration: const BoxDecoration(
@@ -54,7 +54,7 @@ class _SentMessageState extends State<SentMessage> {
               color: Color.fromARGB(255, 136, 240, 153),
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(8,8,8,18),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 18),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -11,19 +11,19 @@ class CustomAppBar extends StatelessWidget {
     return Container(
       height: 62,
       width: double.infinity,
-      color: Color(0xff000000).withOpacity(0.6),
+      color: const Color(0xff000000).withOpacity(0.6),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Icon(
+            const Icon(
               Icons.arrow_back,
               size: 28,
               color: Color(0xffFFFFFF),
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Column(
@@ -39,19 +39,19 @@ class CustomAppBar extends StatelessWidget {
                             fontSize: 21,
                             fontWeight: FontWeight.w500,
                             letterSpacing: -0.2,
-                            color: Color(0xffFFFFFF)))),
+                            color: const Color(0xffFFFFFF)))),
                 RichText(
                   text: TextSpan(
                     text: '11 people are in the room',
                   style: GoogleFonts.montserrat(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xffBABABA)),
+                      color: const Color(0xffBABABA)),
                 ))
               ],
             ),
             const Spacer(),
-            Icon(
+            const Icon(
               Icons.more_vert_rounded,
               size: 28,
               color: Color(0xffFFFFFF),

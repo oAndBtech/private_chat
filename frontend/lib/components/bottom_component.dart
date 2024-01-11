@@ -5,11 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:private_chat/components/custom_textfield.dart';
 import 'package:private_chat/components/send_button.dart';
 import 'package:private_chat/models/message_model.dart';
-import 'package:private_chat/models/msg_model_sender.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
-import 'package:private_chat/providers/room_provider.dart';
-import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/services/socket_services.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -31,7 +28,7 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
     UserModel user = UserModel(
         name: "bhaskar", phone: "98465", id: 1, fcmtoken: "xdrcvftgy");
 
-    if (text.isNotEmpty && user != null && roomId != null && user.id != null) {
+    if (text.isNotEmpty && user.id != null) {
       List<int> contentByte = utf8.encode(text);
       // MessageModel msg = MessageModel(
       //     istext: true,
