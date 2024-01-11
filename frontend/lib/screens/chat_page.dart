@@ -48,7 +48,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         List<int> content = utf8.encode(jsonResponse["content"]);
 
         MessageModel receivedMessage = MessageModel(
-            id: jsonResponse["senderId"],
+            sender: jsonResponse["senderId"],
             timestamp: jsonResponse["timestamp"],
             sendername: jsonResponse["sender"],
             istext: jsonResponse["istext"],

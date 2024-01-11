@@ -6,7 +6,7 @@ import (
 	"github.com/oAndBtech/private_chat/backend/database"
 )
 
-func NewMessageArriveNotification(roomId string, senderName string,senderId int) {
+func NewMessageArriveNotification(roomId string, senderName string, senderId int) {
 	var body string
 	var title string
 
@@ -17,7 +17,7 @@ func NewMessageArriveNotification(roomId string, senderName string,senderId int)
 		return
 	}
 
-	body = fmt.Sprintf("%s sent a message",senderName)
+	body = fmt.Sprintf("%s sent a message", senderName)
 	// title = fmt.Sprintf("New message in %s", room.RoomName)
 	if room.RoomName == nil || room.RoomName == "" {
 		title = "New Message!"
@@ -25,13 +25,17 @@ func NewMessageArriveNotification(roomId string, senderName string,senderId int)
 		title = room.RoomName.(string)
 	}
 
-	fcmTokens, err := database.GetAllFCMTokensInARoom(roomId,senderId)
+	fcmTokens, err := database.GetAllFCMTokensInARoom(roomId, senderId)
 
 	if err != nil {
 		fmt.Printf("ERROR while sending notification: %s", err)
 		return
 	}
 
+	if fcmTokens == nil {
+		fmt.Println("No fcm tokens present")
+		return
+	}
 	SendPushNotification(fcmTokens, title, body)
 
 }
