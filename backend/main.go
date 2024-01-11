@@ -42,11 +42,7 @@ func main() {
 		log.Fatal(err)
 	}
 	notifications.InitFirebase(app)
-
-	tokens := []string{"euX-WEFPQnCszn8SuutA7Q:APA91bFQTNx7s1GBFBwaZofloDfhUW6j9ZPZSFRjE0xqJDHFl2CK11QmfVGyeUZ1vELNY--ggtJ9kCfbL9r2RR7rhgyOiLkIfZtRWFop7pkUNA6dmnO4F5NSKmCWiBAAIHVmIZHbkXiM"}
-
-	notifications.SendPushNotification(tokens, "Hello Omkar", "Tu madarchod hai")
-
+	
 	r := router.Router()
 	err = http.ListenAndServe(":3000", r)
 	if err != nil {
