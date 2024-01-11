@@ -1,16 +1,26 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:private_chat/components/custom_textfield.dart';
-import 'package:private_chat/components/sent_message.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/screens/chat_page.dart';
+import 'package:private_chat/services/api_services.dart';
+import 'firebase_options.dart';
 
 void main() async {
-   await dotenv.load(fileName: ".env");
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+   await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const ProviderScope(child: MyApp()));
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
 }
 
 class MyApp extends ConsumerStatefulWidget {
@@ -22,21 +32,43 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   // This widget is the root of your application.
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
   addIdsToTheProviders() {
     UserModel user = UserModel(
         name: "bhaskar", phone: "98465", id: 1, fcmtoken: "xdrcvftgy");
     ref.read(userProvider.notifier).addUser(user);
   }
 
-  addRoomId(){
+  addRoomId() {
     ref.read(roomProvider.notifier).addRoom("aa45");
   }
 
   @override
   void initState() {
     super.initState();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     addIdsToTheProviders();
     // addRoomId();
+    setupFirebase();
+  }
+
+  setupFirebase() async {
+    String? token = await _firebaseMessaging.getToken();
+    print('FCM TOKEN $token');
+
+    if (token != null) {
+      await sendTokenToServer(token);
+    }
+
+    _firebaseMessaging.onTokenRefresh.listen((newToken) {
+      sendTokenToServer(newToken);
+    });
+  }
+
+  sendTokenToServer(String token) async {
+    int userId = 1; //TODO: get userId
+    ApiService().updateFcmToken(token, userId);
   }
 
   @override
@@ -48,3 +80,4 @@ class _MyAppState extends ConsumerState<MyApp> {
     );
   }
 }
+

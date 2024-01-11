@@ -67,6 +67,16 @@ class ApiService {
     }
   }
 
+  Future<bool> updateFcmToken(String fcmtoken, int id) async {
+    final response = await http.post(Uri.parse("$backendUrl/user/$id"),
+        body: jsonEncode({"fcmtoken": fcmtoken}));
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> deleteUser(int id) async {
     final response = await http.delete(Uri.parse("$backendUrl/user/$id"));
 
