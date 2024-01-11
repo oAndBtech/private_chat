@@ -13,18 +13,10 @@ func Room(roomId string) (model.RoomModel, error) {
     err := db.QueryRow(query, roomId).Scan(&room.ID, &room.RoomId, &room.RoomName)
     if err != nil {
         if err == sql.ErrNoRows {
-            // Handle case where no rows are returned
             return model.RoomModel{}, fmt.Errorf("no room found with ID %s", roomId)
         }
         return model.RoomModel{}, fmt.Errorf("error retrieving room: %v", err)
     }
-
-    // Handle NULL values for RoomName
-    // if room.RoomName == "" {
-    //     // Handle NULL case here, e.g., set a default value
-    //     room.RoomName = "DefaultRoomName"
-    // }
-
     return room, nil
 }
 

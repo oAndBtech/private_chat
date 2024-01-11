@@ -152,3 +152,49 @@ func AllUserInRoom(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(users)
 }
+
+func UpdateRoom(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	idStr, ok := params["id"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"message": "Inavild ID"})
+		return
+	}
+
+	var room model.RoomModel
+	err2 := json.NewDecoder(r.Body).Decode(&room)
+	if err2 != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"message": "Invalid JSON format"})
+		return
+	}
+
+	isRoomExists , err := database.VerifyRoomId(idStr)
+
+	if err!=nil || !isRoomExists {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"message": "Wrong Room ID (Room does not exists)"})
+		return
+	}
+
+	str := room.RoomName.(string)
+
+	result := database.UpdateRoomName(str, idStr)
+
+	if result {
+		if !result {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"message": "failed to update room name"})
+			return
+		}
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(
+		map[string]string{
+			"message":  "Successfully Update",
+			"roomid":   idStr,
+			"roomname": str})
+}
