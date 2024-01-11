@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "369697723634",
+    "project_id": "chat-app-oandb",
+    "storage_bucket": "chat-app-oandb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369697723634:android:9d1828579dffd4e435ec6b",
+        "android_client_info": {
+          "package_name": "com.oandb.chat.private_chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANz4kQzC933XtObXJqsdeG5DoI6hjaQFU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
