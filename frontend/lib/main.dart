@@ -11,9 +11,9 @@ import 'package:private_chat/services/api_services.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-   await Firebase.initializeApp(
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const ProviderScope(child: MyApp()));
@@ -51,16 +51,14 @@ class _MyAppState extends ConsumerState<MyApp> {
     addIdsToTheProviders();
     // addRoomId();
     setupFirebase();
+    setupFirebaseListeners();
   }
 
   setupFirebase() async {
     String? token = await _firebaseMessaging.getToken();
-    print('FCM TOKEN $token');
-
     if (token != null) {
       await sendTokenToServer(token);
     }
-
     _firebaseMessaging.onTokenRefresh.listen((newToken) {
       sendTokenToServer(newToken);
     });
@@ -69,6 +67,15 @@ class _MyAppState extends ConsumerState<MyApp> {
   sendTokenToServer(String token) async {
     int userId = 1; //TODO: get userId
     ApiService().updateFcmToken(token, userId);
+  }
+
+  setupFirebaseListeners() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      await handleMessage(message);
+    });
+  }
+
+  handleMessage(RemoteMessage message) async {
   }
 
   @override
@@ -80,4 +87,3 @@ class _MyAppState extends ConsumerState<MyApp> {
     );
   }
 }
-
