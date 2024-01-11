@@ -10,18 +10,29 @@ import (
 	"github.com/oAndBtech/private_chat/backend/model"
 )
 
-// func GetRoom(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-// 	params := mux.Vars(r)
-// 	roomId,ok := params["id"]
-// 	if !ok {
-// 		fmt.Println("not a valid id while fetching room")
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		json.NewEncoder(w).Encode("Please provide a valid id")
-// 		return
-// 	}
+func GetRoom(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	roomId, ok := params["id"]
+	if !ok {
+		fmt.Println("not a valid id while fetching room")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode("Please provide a valid id")
+		return
+	}
 
-// }
+	room, err := database.Room(roomId)
+
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(room)
+}
 
 func AddRoom(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")

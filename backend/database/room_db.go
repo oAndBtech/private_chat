@@ -1,20 +1,33 @@
 package database
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/oAndBtech/private_chat/backend/model"
 )
 
 func Room(roomId string) (model.RoomModel, error) {
-	query := "SELECT * FROM rooms WHERE roomid = $1"
-	var room model.RoomModel
-	err := db.QueryRow(query, roomId).Scan(&room.ID, &room.RoomId, &room.RoomName)
-	if err != nil {
-		return model.RoomModel{}, fmt.Errorf("error retrieving room: %v", err)
-	}
-	return room, nil
+    query := "SELECT * FROM rooms WHERE roomid = $1"
+    var room model.RoomModel
+    err := db.QueryRow(query, roomId).Scan(&room.ID, &room.RoomId, &room.RoomName)
+    if err != nil {
+        if err == sql.ErrNoRows {
+            // Handle case where no rows are returned
+            return model.RoomModel{}, fmt.Errorf("no room found with ID %s", roomId)
+        }
+        return model.RoomModel{}, fmt.Errorf("error retrieving room: %v", err)
+    }
+
+    // Handle NULL values for RoomName
+    // if room.RoomName == "" {
+    //     // Handle NULL case here, e.g., set a default value
+    //     room.RoomName = "DefaultRoomName"
+    // }
+
+    return room, nil
 }
+
 
 func AddRoom(roomId string) bool {
 	query := "INSERT INTO rooms (roomid) VALUES ($1)"

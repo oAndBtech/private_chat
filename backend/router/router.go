@@ -23,6 +23,7 @@ func Router() *mux.Router {
 	r.HandleFunc("/user/{id}", controller.DeleteUser).Methods("DELETE") //delete user
 
 	//Room Controllers
+	r.HandleFunc("/room/{id}", controller.GetRoom).Methods("GET")                   //get room
 	r.HandleFunc("/room/oandbtech", controller.AddRoom).Methods("POST")           //Add room
 	r.HandleFunc("/room/{id}", controller.DeleteRoom).Methods("DELETE")           //Delete room
 	r.HandleFunc("/room/{id}/users", controller.AllUserInRoom).Methods("GET")     //get all users in room
