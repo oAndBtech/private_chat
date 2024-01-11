@@ -7,8 +7,10 @@ import 'package:private_chat/components/appbar.dart';
 import 'package:private_chat/components/bottom_component.dart';
 import 'package:private_chat/components/message_list.dart';
 import 'package:private_chat/models/message_model.dart';
+import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
 import 'package:private_chat/providers/room_provider.dart';
+import 'package:private_chat/services/api_services.dart';
 import 'package:private_chat/services/socket_services.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -62,18 +64,32 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     }
   }
 
+  void test() async {
+    List<UserModel> list = await ApiService().allUsersInRoom('vgbhjn') ?? [];
+
+    print(list.length);
+  }
+
+  void test2() async {
+    List<MessageModel> list = await ApiService().messagesInRoom('abc') ?? [];
+
+    print(list.length);
+  }
+
   @override
   Widget build(BuildContext context) {
     List<MessageModel> messages = ref.watch(messageProvider);
+
+    test2();
 
     return Scaffold(
         backgroundColor: const Color(0xff282C34),
         appBar: AppBar(
           elevation: 0,
-        toolbarHeight: 0.0,
-        systemOverlayStyle:
-             const SystemUiOverlayStyle(statusBarColor: Color.fromARGB(255, 55, 55, 55)),
-      ),
+          toolbarHeight: 0.0,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+              statusBarColor: Color.fromARGB(255, 55, 55, 55)),
+        ),
         body: SafeArea(
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.end,

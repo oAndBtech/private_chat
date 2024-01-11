@@ -54,7 +54,7 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         CustomTextfield(
