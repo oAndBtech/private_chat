@@ -33,6 +33,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     super.initState();
     // addRoomId();
     buildSocketConnection();
+    fetchAllMessages();
   }
 
   buildSocketConnection() {
@@ -64,23 +65,17 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     }
   }
 
-  void test() async {
-    List<UserModel> list = await ApiService().allUsersInRoom('vgbhjn') ?? [];
+  fetchAllMessages() async {
+    String roomId = 'abc'; //TODO: hardcoded
+    List<MessageModel> messages =
+        await ApiService().messagesInRoom(roomId) ?? [];
 
-    print(list.length);
-  }
-
-  void test2() async {
-    List<MessageModel> list = await ApiService().messagesInRoom('abc') ?? [];
-
-    print(list.length);
+    ref.read(messageProvider.notifier).addAllMessages(messages);
   }
 
   @override
   Widget build(BuildContext context) {
     List<MessageModel> messages = ref.watch(messageProvider);
-
-    test2();
 
     return Scaffold(
         backgroundColor: const Color(0xff282C34),

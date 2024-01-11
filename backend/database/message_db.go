@@ -7,7 +7,7 @@ import (
 	"github.com/oAndBtech/private_chat/backend/model"
 )
 
-func AddMessage(userId int, roomId string, msg []byte, isText bool,senderName string) bool {
+func AddMessage(userId int, roomId string, msg []byte, isText bool, senderName string) bool {
 	query := "INSERT INTO messages (content, sender, receiver, istext, sendername) VALUES ($1, $2, $3, $4, $5)"
 	_, err := db.Exec(query, msg, userId, roomId, isText, senderName) //TODO: take isText variable from frontend and then change it
 	if err != nil {
@@ -33,6 +33,8 @@ func AllMessagesInRoom(roomId string) ([]model.MessageModel, error) {
 			return nil, fmt.Errorf("error scanning message row: %v", err)
 		}
 		messages = append(messages, message)
+
+		fmt.Println(message)
 	}
 
 	if err := rows.Err(); err != nil {

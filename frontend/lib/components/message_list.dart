@@ -13,11 +13,22 @@ class MessageList extends StatefulWidget {
 }
 
 class _MessageListState extends State<MessageList> {
-  int senderId = 1;
+  int senderId = 1; //TODO: hardcoded
+  final ScrollController scrollController = ScrollController();
+  scrollToBottom() {
+    scrollController.jumpTo(scrollController.position.maxScrollExtent);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => scrollToBottom());
     return ListView.builder(
+        controller: scrollController,
         itemCount: widget.messages.length,
         itemBuilder: (context, index) {
           return widget.messages[index].sender == senderId

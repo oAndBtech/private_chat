@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -130,7 +131,7 @@ class ApiService {
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = jsonDecode(response.body);
-      print(jsonResponse);
+      // print(jsonResponse);
 
       return jsonResponse
           .map((message) => MessageModel(
@@ -139,8 +140,7 @@ class ApiService {
               sendername: message["sendername"],
               istext: message["istext"],
               timestamp: message["timestamp"],
-              content: message["content"]
-              ))
+              content: base64Decode(message["content"])))
           .toList();
     }
     return null;
