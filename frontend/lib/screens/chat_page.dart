@@ -7,7 +7,9 @@ import 'package:private_chat/components/appbar.dart';
 import 'package:private_chat/components/bottom_component.dart';
 import 'package:private_chat/components/message_list.dart';
 import 'package:private_chat/models/message_model.dart';
+import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
+import 'package:private_chat/providers/users_in_room_provider.dart';
 import 'package:private_chat/services/api_services.dart';
 import 'package:private_chat/services/socket_services.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -30,7 +32,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   buildSocketConnection() {
-    String roomId = 'aa45'; //TODO: change this
+    String roomId = 'abc'; //TODO: change this
     WebSocket ws = SocketService().buildSocketConnection(roomId, 1);
     setState(() {
       socket = ws;
@@ -60,7 +62,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   fetchAllMessages() async {
-    String roomId = 'aa45'; //TODO: hardcoded
+    String roomId = 'abc'; //TODO: hardcoded
     List<MessageModel> messages =
         await ApiService().messagesInRoom(roomId) ?? [];
 

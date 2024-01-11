@@ -1,7 +1,7 @@
 class RoomModel {
   final String roomId;
   final String? roomName;
-  final int id;
+  final int? id;
 
-  RoomModel({required this.roomId, required this.roomName, required this.id});
+  RoomModel({required this.roomId, required this.roomName,this.id});
 }

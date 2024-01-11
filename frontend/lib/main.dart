@@ -40,10 +40,6 @@ class _MyAppState extends ConsumerState<MyApp> {
     ref.read(userProvider.notifier).addUser(user);
   }
 
-  addRoomId() {
-    ref.read(roomProvider.notifier).addRoom("aa45");
-  }
-
   @override
   void initState() {
     super.initState();
