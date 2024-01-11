@@ -1,18 +1,22 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
+	firebase "firebase.google.com/go"
 	"github.com/oAndBtech/private_chat/backend/database"
 	"github.com/oAndBtech/private_chat/backend/env"
 	"github.com/oAndBtech/private_chat/backend/router"
+	"google.golang.org/api/option"
 )
 
 var db *sql.DB
+var app *firebase.App
 
 func main() {
 	env.LoadEnv()
@@ -29,6 +33,13 @@ func main() {
 	}
 
 	database.InitDB(db)
+
+	//Initialize Firebase Admin SDK
+	opt := option.WithCredentialsFile("path/to/serviceAccountKey.json")
+	app, err = firebase.NewApp(context.Background(), nil, opt)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	r := router.Router()
 	err = http.ListenAndServe(":3000", r)
