@@ -2,7 +2,19 @@ package database
 
 import (
 	"fmt"
+
+	"github.com/oAndBtech/private_chat/backend/model"
 )
+
+func Room(roomId string) (model.RoomModel, error) {
+	query := "SELECT * FROM rooms WHERE roomid = $1"
+	var room model.RoomModel
+	err := db.QueryRow(query, roomId).Scan(&room.ID, &room.RoomId, &room.RoomName)
+	if err != nil {
+		return model.RoomModel{}, fmt.Errorf("error retrieving room: %v", err)
+	}
+	return room, nil
+}
 
 func AddRoom(roomId string) bool {
 	query := "INSERT INTO rooms (roomid) VALUES ($1)"
@@ -15,8 +27,15 @@ func AddRoom(roomId string) bool {
 	return true
 }
 
-func UpdateRoomID(oldRoomID, newRoomID string) {
-	//TODO: do it later no need as of now
+func UpdateRoomName(newRoomName, roomId string) bool {
+	query := "UPDATE rooms SET roomname = $1 WHERE roomid = $2"
+
+	_, err := db.Exec(query,newRoomName, roomId)
+	if err != nil {
+		fmt.Printf("Error while updating room,%v", err)
+		return false
+	}
+	return true
 }
 
 func DeleteRoom(roomId string) error {

@@ -80,6 +80,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			break
 		}
+		fmt.Println("MESSAGE: ",msg)
 
 		var jsonMsg Message
 		err = json.Unmarshal(msg, &jsonMsg)
@@ -87,6 +88,8 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			break
 		}
+
+		fmt.Println(jsonMsg)
 
 		currentTime := time.Now()
 		senderName, err := database.UsersName(userIdInteger)
@@ -108,6 +111,8 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			break
 		}
+
+		fmt.Println([]byte(jsonMsg.Content))
 
 		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content),jsonMsg.IsText, senderName)
 		broadcast(roomID, conn, broadcastJSON)
