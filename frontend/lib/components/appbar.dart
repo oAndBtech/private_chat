@@ -38,6 +38,31 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
     }
   }
 
+//TODO: need to work on design
+  groupMembersDialog() {
+    return AlertDialog(
+      title: Center(child: Text("Group Members")),
+      content: Container(
+          child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: generateList(),
+      )),
+    );
+  }
+  List<Widget> generateList() {
+    List<UserModel> usrs = ref.watch(usersInRoomProvider);
+    List<Widget> list = List.generate(
+        usrs.length,
+        (index) => Column(
+              children: [
+                Text(usrs[index].name),
+                Text(usrs[index].phone),
+                Divider()
+              ],
+            ));
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     int totalMembers = ref.watch(usersInRoomProvider).length;
@@ -69,29 +94,36 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
             const SizedBox(
               width: 20,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 8,
-                ),
-                RichText(
-                    text: TextSpan(
-                        text: roomName,
-                        style: GoogleFonts.montserrat(
-                            fontSize: 21,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: -0.2,
-                            color: const Color(0xffFFFFFF)))),
-                RichText(
-                    text: TextSpan(
-                  text: '$totalMembers people are in the room',
-                  style: GoogleFonts.montserrat(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xffBABABA)),
-                ))
-              ],
+            InkWell(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: ((context) => groupMembersDialog()));
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  RichText(
+                      text: TextSpan(
+                          text: roomName,
+                          style: GoogleFonts.montserrat(
+                              fontSize: 21,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: -0.2,
+                              color: const Color(0xffFFFFFF)))),
+                  RichText(
+                      text: TextSpan(
+                    text: '$totalMembers people are in the room',
+                    style: GoogleFonts.montserrat(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xffBABABA)),
+                  ))
+                ],
+              ),
             ),
             const Spacer(),
             const Icon(
