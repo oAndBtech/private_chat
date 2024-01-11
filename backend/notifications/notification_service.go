@@ -6,7 +6,7 @@ import (
 	"github.com/oAndBtech/private_chat/backend/database"
 )
 
-func NewMessageArriveNotification(roomId string, senderName string) {
+func NewMessageArriveNotification(roomId string, senderName string,senderId int) {
 	var body string
 	var title string
 
@@ -25,7 +25,7 @@ func NewMessageArriveNotification(roomId string, senderName string) {
 		title = room.RoomName.(string)
 	}
 
-	fcmTokens, err := database.GetAllFCMTokensInARoom(roomId)
+	fcmTokens, err := database.GetAllFCMTokensInARoom(roomId,senderId)
 
 	if err != nil {
 		fmt.Printf("ERROR while sending notification: %s", err)

@@ -147,7 +147,7 @@ func CheckUserExistsDB(phone string) (bool, model.UserModel) {
 	return false, user
 }
 
-func GetAllFCMTokensInARoom(roomId string) ([]string, error) { //TODO: pass sender ID as well
+func GetAllFCMTokensInARoom(roomId string, senderId int) ([]string, error) {
 	users, err := UsersInRoom(roomId)
 	if err != nil {
 		return []string{}, err
@@ -155,7 +155,9 @@ func GetAllFCMTokensInARoom(roomId string) ([]string, error) { //TODO: pass send
 
 	var tokens []string
 	for _, user := range users {
-		tokens = append(tokens, user.FcmToken.(string))
+		if senderId != user.ID && user.FcmToken != nil && user.FcmToken != "" {
+			tokens = append(tokens, user.FcmToken.(string))
+		}
 	}
 	return tokens, nil
 }
