@@ -19,23 +19,22 @@ func User(id int) (model.UserModel, error) {
 }
 
 func AddUser(user model.UserModel) (model.UserModel, error) {
-    query := "INSERT INTO users (name, phone, fcmtoken) VALUES ($1, $2, $3) RETURNING *"
+	query := "INSERT INTO users (name, phone, fcmtoken) VALUES ($1, $2, $3) RETURNING *"
 
-    var newUser model.UserModel
-    err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken).Scan(
-        &newUser.ID,
-        &newUser.Name,
-        &newUser.Phone,
-        &newUser.FcmToken,
-    )
-    if err != nil {
-        fmt.Println("Error adding user:", err)
-        return model.UserModel{}, fmt.Errorf("ERROR: %s", err)
-    }
+	var newUser model.UserModel
+	err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken).Scan(
+		&newUser.ID,
+		&newUser.Name,
+		&newUser.Phone,
+		&newUser.FcmToken,
+	)
+	if err != nil {
+		fmt.Println("Error adding user:", err)
+		return model.UserModel{}, fmt.Errorf("ERROR: %s", err)
+	}
 
-    return newUser, nil
+	return newUser, nil
 }
-
 
 func UpdateUser(id int, user model.UserModel) bool {
 	fields := map[string]interface{}{
@@ -104,39 +103,6 @@ func DeleteUser(id int) bool {
 	return true
 }
 
-func UsersInRoom(roomId string) ([]model.UserModel, error) {
-	// query := "SELECT * FROM users WHERE roomId"
-	query := "SELECT userid FROM room_user WHERE roomid = $1"
-
-	rows, err := db.Query(query, roomId)
-
-	if err != nil {
-		return nil, fmt.Errorf("error getting all users in room: %v", err)
-	}
-	defer rows.Close()
-	var users []model.UserModel
-
-	for rows.Next() {
-		var userId int
-		err := rows.Scan(&userId)
-
-		if err != nil {
-			return nil, fmt.Errorf("error scanning room_user row: %v", err)
-		}
-
-		query := "SELECT * FROM users WHERE id = $1"
-
-		var user model.UserModel
-		db.QueryRow(query, userId).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken)
-		users = append(users, user)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating over room_user rows: %v", err)
-	}
-	return users, nil
-}
-
 func UsersName(userId int) (string, error) {
 	query := "SELECT name FROM users WHERE id = $1"
 	var userName string
@@ -179,4 +145,17 @@ func CheckUserExistsDB(phone string) (bool, model.UserModel) {
 		return true, user
 	}
 	return false, user
+}
+
+func GetAllFCMTokensInARoom(roomId string) ([]string, error) { //TODO: pass sender ID as well
+	users, err := UsersInRoom(roomId)
+	if err != nil {
+		return []string{}, err
+	}
+
+	var tokens []string
+	for _, user := range users {
+		tokens = append(tokens, user.FcmToken.(string))
+	}
+	return tokens, nil
 }

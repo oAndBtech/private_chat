@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/oAndBtech/private_chat/backend/database"
+	"github.com/oAndBtech/private_chat/backend/notifications"
 
 	"time"
 )
@@ -80,7 +81,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			break
 		}
-		fmt.Println("MESSAGE: ",msg)
+		fmt.Println("MESSAGE: ", msg)
 
 		var jsonMsg Message
 		err = json.Unmarshal(msg, &jsonMsg)
@@ -114,8 +115,9 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println([]byte(jsonMsg.Content))
 
-		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content),jsonMsg.IsText, senderName)
+		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content), jsonMsg.IsText, senderName)
 		broadcast(roomID, conn, broadcastJSON)
+		notifications.NewMessageArriveNotification(roomID, senderName)
 	}
 }
 

@@ -15,20 +15,18 @@ func InitFirebase(firebaseApp *firebase.App) {
 	fmt.Println("Firebase Admin SDK Initialized")
 }
 
-func SendPushNotification(fcmTokens []string) {
+func SendPushNotification(fcmTokens []string,title string, body string) {
 	ctx := context.Background()
-
 	client, err := app.Messaging(ctx)
 	if err != nil {
 		fmt.Printf("error getting Messaging client: %v\n", err)
 		return
 	}
 
-	//TODO: CHNAGE THIS
 	message := &messaging.MulticastMessage{
 		Notification: &messaging.Notification{
-			Title: "Hello",
-			Body:  "World",
+			Title:  title,
+			Body:  body,
 		},
 		Tokens: fcmTokens,
 	}
@@ -37,10 +35,6 @@ func SendPushNotification(fcmTokens []string) {
 	if err != nil {
 		fmt.Printf("error sending multicast message: %v\n", err)
 
-	}
-
-	for _, resp := range response.Responses {
-		fmt.Printf("Successfully sent message to %v: %v\n", resp.MessageID, resp.Success)
 	}
 
 	if response.FailureCount > 0 {

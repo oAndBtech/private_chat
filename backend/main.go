@@ -11,6 +11,7 @@ import (
 	firebase "firebase.google.com/go"
 	"github.com/oAndBtech/private_chat/backend/database"
 	"github.com/oAndBtech/private_chat/backend/env"
+	"github.com/oAndBtech/private_chat/backend/notifications"
 	"github.com/oAndBtech/private_chat/backend/router"
 	"google.golang.org/api/option"
 )
@@ -35,17 +36,23 @@ func main() {
 	database.InitDB(db)
 
 	//Initialize Firebase Admin SDK
-	opt := option.WithCredentialsFile("path/to/serviceAccountKey.json")
+	opt := option.WithCredentialsFile("credentials.json")
 	app, err = firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		log.Fatal(err)
 	}
+	notifications.InitFirebase(app)
+
+	tokens := []string{"euX-WEFPQnCszn8SuutA7Q:APA91bFQTNx7s1GBFBwaZofloDfhUW6j9ZPZSFRjE0xqJDHFl2CK11QmfVGyeUZ1vELNY--ggtJ9kCfbL9r2RR7rhgyOiLkIfZtRWFop7pkUNA6dmnO4F5NSKmCWiBAAIHVmIZHbkXiM"}
+
+	notifications.SendPushNotification(tokens, "Hello Omkar", "Tu madarchod hai")
 
 	r := router.Router()
 	err = http.ListenAndServe(":3000", r)
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	// res, err := database.CheckUserIsInRoom(1, "45")
 	// if err != nil {
 	// 	fmt.Println(err)
