@@ -11,7 +11,7 @@ import (
 func User(id int) (model.UserModel, error) {
 	query := "SELECT * FROM users WHERE id = $1"
 	var user model.UserModel
-	err := db.QueryRow(query, id).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken)
+	err := db.QueryRow(query, id).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken, &user.WebFcmToken)
 	if err != nil {
 		return model.UserModel{}, fmt.Errorf("error retrieving user: %v", err)
 	}
@@ -19,14 +19,15 @@ func User(id int) (model.UserModel, error) {
 }
 
 func AddUser(user model.UserModel) (model.UserModel, error) {
-	query := "INSERT INTO users (name, phone, fcmtoken) VALUES ($1, $2, $3) RETURNING *"
+	query := "INSERT INTO users (name, phone, fcmtoken, webfcmtoken) VALUES ($1, $2, $3, $4) RETURNING *"
 
 	var newUser model.UserModel
-	err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken).Scan(
+	err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken, user.WebFcmToken).Scan(
 		&newUser.ID,
 		&newUser.Name,
 		&newUser.Phone,
 		&newUser.FcmToken,
+		&newUser.WebFcmToken,
 	)
 	if err != nil {
 		fmt.Println("Error adding user:", err)
@@ -38,9 +39,10 @@ func AddUser(user model.UserModel) (model.UserModel, error) {
 
 func UpdateUser(id int, user model.UserModel) bool {
 	fields := map[string]interface{}{
-		"name":     user.Name,
-		"phone":    user.Phone,
-		"fcmtoken": user.FcmToken,
+		"name":        user.Name,
+		"phone":       user.Phone,
+		"fcmtoken":    user.FcmToken,
+		"webfcmtoken": user.WebFcmToken,
 	}
 
 	var setStatements []string
@@ -137,7 +139,7 @@ func CheckUserExistsDB(phone string) (bool, model.UserModel) {
 	}
 	if exists {
 		query = "SELECT * FROM users WHERE phone = $1"
-		err := db.QueryRow(query, phone).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken)
+		err := db.QueryRow(query, phone).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken, &user.WebFcmToken)
 		if err != nil {
 			fmt.Printf("error %v", err)
 			return false, user
@@ -157,6 +159,9 @@ func GetAllFCMTokensInARoom(roomId string, senderId int) ([]string, error) {
 	for _, user := range users {
 		if senderId != user.ID && user.FcmToken != nil && user.FcmToken != "" {
 			tokens = append(tokens, user.FcmToken.(string))
+		}
+		if senderId != user.ID && user.WebFcmToken != nil && user.WebFcmToken != "" {
+			tokens = append(tokens, user.WebFcmToken.(string))
 		}
 	}
 	return tokens, nil

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +17,14 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      sound: true,
+      provisional: false);
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -51,6 +60,16 @@ class _MyAppState extends ConsumerState<MyApp> {
   }
 
   setupFirebase() async {
+    if (kIsWeb) {
+      final fcmToken = await FirebaseMessaging.instance.getToken(
+          vapidKey:
+              "BLrhT_yN89tQv7TPDPaurZr6tmwrb1Rs0ckVbNwkTlsAi5S4lUJNkrXXodhCHKucDhjoy70XY0E90k99PeY5LlA");
+      if (fcmToken != null) {
+        await sendTokenToServer(fcmToken);
+      }
+      return;
+    }
+
     String? token = await _firebaseMessaging.getToken();
     if (token != null) {
       await sendTokenToServer(token);
@@ -62,7 +81,11 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   sendTokenToServer(String token) async {
     int userId = 1; //TODO: get userId
-    ApiService().updateFcmToken(token, userId);
+    if (kIsWeb) {
+      ApiService().updateWebFcmToken(token, userId);
+    } else {
+      ApiService().updateFcmToken(token, userId);
+    }
   }
 
   setupFirebaseListeners() {

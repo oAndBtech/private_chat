@@ -32,7 +32,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   buildSocketConnection() {
-    String roomId = 'abc'; //TODO: change this
+    String roomId = 'aa45'; //TODO: change this
     WebSocket ws = SocketService().buildSocketConnection(roomId, 1);
     setState(() {
       socket = ws;
@@ -62,7 +62,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   fetchAllMessages() async {
-    String roomId = 'abc'; //TODO: hardcoded
+    String roomId = 'aa45'; //TODO: hardcoded
     List<MessageModel> messages =
         await ApiService().messagesInRoom(roomId) ?? [];
 

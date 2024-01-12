@@ -83,6 +83,19 @@ class ApiService {
     }
   }
 
+  Future<bool> updateWebFcmToken(String webfcmtoken, int id) async {
+    try {
+      final response = await http.post(Uri.parse("$backendUrl/user/$id"),
+          body: jsonEncode({"webfcmtoken": webfcmtoken}));
+
+      return response.statusCode == 200;
+    } catch (e) {
+      print("Error in updateWebFcmToken: $e");
+      return false;
+    }
+  }
+
+
   Future<bool> deleteUser(int id) async {
     try {
       final response = await http.delete(Uri.parse("$backendUrl/user/$id"));
