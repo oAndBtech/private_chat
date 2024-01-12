@@ -54,6 +54,7 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         CustomTextfield(
+          socket: widget.socket,
           messageController: messageController,
         ),
         Padding(

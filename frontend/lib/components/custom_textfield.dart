@@ -1,18 +1,17 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:private_chat/models/message_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
+import 'package:private_chat/services/socket_services.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 class CustomTextfield extends ConsumerStatefulWidget {
-  const CustomTextfield({
-    super.key,
-    required this.messageController,
-  });
+  const CustomTextfield(
+      {super.key, required this.messageController, this.socket});
   final TextEditingController messageController;
+  final WebSocket? socket;
 
   @override
   ConsumerState<CustomTextfield> createState() => _CustomTextfieldState();
@@ -24,13 +23,14 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
   final ImagePicker _picker = ImagePicker();
   Future<void> pickImage(ImageSource source) async {
     final pickedFiles = await _picker.pickMultiImage();
-    if (pickedFiles != null) {
+    if (pickedFiles.isNotEmpty) {
       List<MessageModel> msgs = [];
       for (XFile element in pickedFiles) {
         List<int> imageBytes = await element.readAsBytes();
         MessageModel msg =
             MessageModel(istext: false, content: imageBytes, sender: 1);
         msgs.add(msg);
+        SocketService().sendImage(imageBytes, widget.socket, false);
       }
 
       ref.read(messageProvider.notifier).addAllMessages(msgs);

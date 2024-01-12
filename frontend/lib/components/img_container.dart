@@ -9,19 +9,18 @@ class ImageContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 20.0,
-      // height: 350.0, 
-      constraints: BoxConstraints(
-        maxHeight: 100,
-        maxWidth: 100,
-        minWidth: 10,
+      width: 280,
+      constraints: const BoxConstraints(
+        maxHeight: 400,
+        maxWidth: 350,
       ),
-      
-      color: Colors.amber,
-      // child: Image.memory(
-      //   Uint8List.fromList(bytes),
-      //   fit: BoxFit.cover,
-      // ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.memory(
+          Uint8List.fromList(bytes),
+          fit: BoxFit.cover,
+        ),
+      ),
     );
   }
 }

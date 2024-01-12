@@ -22,6 +22,15 @@ class SocketService {
     socket.send(jsonContent);
   }
 
+  sendImage(List<int> img, WebSocket? socket, bool isText) {
+    if (socket == null) return;
+    final jsonContent = jsonEncode({
+      'img': img,
+      'istext': isText,
+    });
+    socket.send(jsonContent);
+  }
+
   closeConnection(WebSocket socket) {
     socket.close();
   }
