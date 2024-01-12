@@ -17,9 +17,10 @@ import (
 type Message struct {
 	ID        int    `json:"senderId"`
 	Sender    string `json:"sender"`
-	Content   string `json:"content"`
+	Content   any    `json:"content"`
 	IsText    bool   `json:"istext"`
 	Timestamp string `json:"timestamp"`
+	Image     []byte `json:img`
 }
 
 var (
@@ -99,12 +100,24 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		broadcastMsg := Message{
-			ID:        userIdInteger,
-			Sender:    senderName,
-			Content:   jsonMsg.Content,
-			IsText:    jsonMsg.IsText,
-			Timestamp: currentTime.Format(time.RFC3339),
+		var broadcastMsg Message
+
+		if jsonMsg.IsText {
+			broadcastMsg = Message{
+				ID:        userIdInteger,
+				Sender:    senderName,
+				Content:   jsonMsg.Content,
+				IsText:    jsonMsg.IsText,
+				Timestamp: currentTime.Format(time.RFC3339),
+			}
+		} else {
+			broadcastMsg = Message{
+				ID:        userIdInteger,
+				Sender:    senderName,
+				Content:   jsonMsg.Image,
+				IsText:    jsonMsg.IsText,
+				Timestamp: currentTime.Format(time.RFC3339),
+			}
 		}
 
 		broadcastJSON, err := json.Marshal(broadcastMsg)
@@ -113,9 +126,12 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		fmt.Println([]byte(jsonMsg.Content))
+		if jsonMsg.IsText {
+			storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content.(string)), jsonMsg.IsText, senderName)
+		} else {
+			storeMessage(userIdInteger, roomID, (jsonMsg.Image), jsonMsg.IsText, senderName)
+		}
 
-		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content), jsonMsg.IsText, senderName)
 		broadcast(roomID, conn, broadcastJSON)
 		notifications.NewMessageArriveNotification(roomID, senderName, userIdInteger)
 	}
