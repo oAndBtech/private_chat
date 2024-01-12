@@ -53,7 +53,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   buildSocketConnection() {
-    if (socket != null) {
+    if (socket == null) {
       String roomId = ref.watch(roomIdProvider) ?? '-1';
       WebSocket ws = SocketService().buildSocketConnection(roomId, 1);
       setState(() {
@@ -132,7 +132,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   Widget build(BuildContext context) {
     List<MessageModel> messages = ref.watch(messageProvider);
-    print("STATUS : $status");
     return isLoading
         ? Center(child: CircularProgressIndicator())
         : Scaffold(

@@ -88,35 +88,38 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
             const SizedBox(
               width: 20,
             ),
-            InkWell(
-              onTap: () {
-                showDialog(
-                    context: context,
-                    builder: ((context) => groupMembersDialog()));
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  RichText(
-                      text: TextSpan(
-                          text: roomName,
-                          style: GoogleFonts.montserrat(
-                              fontSize: 21,
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: -0.2,
-                              color: const Color(0xffFFFFFF)))),
-                  RichText(
-                      text: TextSpan(
-                    text: '$totalMembers people are in the room',
-                    style: GoogleFonts.montserrat(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xffBABABA)),
-                  ))
-                ],
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: ((context) => groupMembersDialog()));
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    RichText(
+                        text: TextSpan(
+                            text: roomName,
+                            style: GoogleFonts.montserrat(
+                                fontSize: 21,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: -0.2,
+                                color: const Color(0xffFFFFFF)))),
+                    RichText(
+                        text: TextSpan(
+                      text: '$totalMembers people are in the room',
+                      style: GoogleFonts.montserrat(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xffBABABA)),
+                    ))
+                  ],
+                ),
               ),
             ),
             const Spacer(),
