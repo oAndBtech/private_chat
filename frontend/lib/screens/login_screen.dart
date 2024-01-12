@@ -44,7 +44,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               TextFormField(
                 controller: controller,
                 validator: (value) {
-                  if (value==null || value.isEmpty) {
+                  if (value == null || value.isEmpty) {
                     return "Please Enter a valid Room ID!";
                   }
                   return null;
@@ -92,9 +92,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         controller.text.trim();
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => ChatPage()));
-                  } else {
-                    
-                  }
+                  } else {}
                 },
                 child: Text(
                   'Continue',

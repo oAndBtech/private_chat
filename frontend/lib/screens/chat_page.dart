@@ -7,8 +7,10 @@ import 'package:private_chat/components/appbar.dart';
 import 'package:private_chat/components/bottom_component.dart';
 import 'package:private_chat/components/message_list.dart';
 import 'package:private_chat/models/message_model.dart';
+import 'package:private_chat/models/room_model.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
+import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/providers/users_in_room_provider.dart';
 import 'package:private_chat/services/api_services.dart';
 import 'package:private_chat/services/socket_services.dart';
@@ -24,18 +26,41 @@ class ChatPage extends ConsumerStatefulWidget {
 class _ChatPageState extends ConsumerState<ChatPage> {
   WebSocket? socket;
 
+  int status = 0;
+  bool isLoading = true;
+
+  chechStatus() {
+    print(status);
+    if (status > 3) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    buildSocketConnection();
+    fetchRoom();
+    fetchAllMessages();
+    fetchAllUsers();
+  }
+
   @override
   void initState() {
     super.initState();
-    buildSocketConnection();
-    fetchAllMessages();
   }
 
   buildSocketConnection() {
-    String roomId = 'aa45'; //TODO: change this
+    print("buildSocketConnection");
+    String roomId = ref.watch(roomIdProvider) ?? '-1';
+    print("roomId: $roomId");
     WebSocket ws = SocketService().buildSocketConnection(roomId, 1);
     setState(() {
       socket = ws;
+      status++;
+      chechStatus();
     });
     handleMessages();
   }
@@ -62,34 +87,65 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   fetchAllMessages() async {
-    String roomId = 'aa45'; //TODO: hardcoded
+    print("fetchAllMessages");
+    String roomId = ref.watch(roomIdProvider) ?? '-1';
     List<MessageModel> messages =
         await ApiService().messagesInRoom(roomId) ?? [];
 
     ref.read(messageProvider.notifier).addAllMessages(messages);
+    setState(() {
+      status++;
+      chechStatus();
+    });
+  }
+
+  fetchAllUsers() async {
+    print("fetchAllUsers");
+    String roomId = ref.watch(roomIdProvider) ?? '-1';
+    List<UserModel> usrs = await ApiService().allUsersInRoom(roomId) ?? [];
+    ref.read(usersInRoomProvider.notifier).addAllUsers(usrs);
+    setState(() {
+      status++;
+      chechStatus();
+    });
+  }
+
+  fetchRoom() async {
+    print("fetchRoom");
+    String roomId = ref.watch(roomIdProvider) ?? '-1';
+    RoomModel? room = await ApiService().getRoom(roomId);
+    if (room != null) {
+      ref.read(roomProvider.notifier).addRoom(room);
+      setState(() {
+        status++;
+        chechStatus();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     List<MessageModel> messages = ref.watch(messageProvider);
-
-    return Scaffold(
-        backgroundColor: const Color(0xff282C34),
-        appBar: AppBar(
-          elevation: 0,
-          toolbarHeight: 0.0,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-              statusBarColor: Color.fromARGB(255, 55, 55, 55)),
-        ),
-        body: SafeArea(
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              const CustomAppBar(),
-              Expanded(child: MessageList(messages: messages)),
-              BottomComponent(socket: socket)
-            ],
-          ),
-        ));
+    print("STATUS : $status");
+    return isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Scaffold(
+            backgroundColor: const Color(0xff282C34),
+            appBar: AppBar(
+              elevation: 0,
+              toolbarHeight: 0.0,
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                  statusBarColor: Color.fromARGB(255, 55, 55, 55)),
+            ),
+            body: SafeArea(
+              child: Column(
+                // mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const CustomAppBar(),
+                  Expanded(child: MessageList(messages: messages)),
+                  BottomComponent(socket: socket)
+                ],
+              ),
+            ));
   }
 }

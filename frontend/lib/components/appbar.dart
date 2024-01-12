@@ -20,23 +20,8 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    fetchAllUsers();
-    fetchRoom();
   }
 
-  fetchAllUsers() async {
-    String roomId = 'abc'; //TODO: hardcoded
-    List<UserModel> usrs = await ApiService().allUsersInRoom(roomId) ?? [];
-    ref.read(usersInRoomProvider.notifier).addAllUsers(usrs);
-  }
-
-  fetchRoom() async {
-    String roomId = 'abc'; //TODO: hardcoded
-    RoomModel? room = await ApiService().getRoom(roomId);
-    if (room != null) {
-      ref.read(roomProvider.notifier).addRoom(room);
-    }
-  }
 
 //TODO: need to work on design
   groupMembersDialog() {
