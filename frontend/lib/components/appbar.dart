@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:private_chat/components/members_element.dart';
 import 'package:private_chat/models/room_model.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/room_provider.dart';
@@ -26,25 +27,33 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
 //TODO: need to work on design
   groupMembersDialog() {
     return AlertDialog(
-      title: Center(child: Text("Group Members")),
-      content: Container(
-          child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: generateList(),
-      )),
+      backgroundColor: Color(0xff111216),
+      title: Text(
+        "Group Members",
+        style: GoogleFonts.montserrat(
+          fontSize: 21,
+          fontWeight: FontWeight.w500,
+          color: Color(0xffFFFFFF)
+        ),
+        ),
+      content: Padding(
+        padding: const EdgeInsets.fromLTRB(6,0,12,0),
+        child: Container(
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: generateList(),
+        )),
+      ),
     );
   }
   List<Widget> generateList() {
     List<UserModel> usrs = ref.watch(usersInRoomProvider);
     List<Widget> list = List.generate(
         usrs.length,
-        (index) => Column(
-              children: [
-                Text(usrs[index].name),
-                Text(usrs[index].phone),
-                Divider()
-              ],
-            ));
+        (index) => MemberElement(name: usrs[index].name, number: usrs[index].phone)
+
+            );
     return list;
   }
 

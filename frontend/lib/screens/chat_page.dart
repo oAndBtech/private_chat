@@ -53,15 +53,16 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   buildSocketConnection() {
-    print("buildSocketConnection");
-    String roomId = ref.watch(roomIdProvider) ?? '-1';
-    print("roomId: $roomId");
-    WebSocket ws = SocketService().buildSocketConnection(roomId, 1);
-    setState(() {
-      socket = ws;
-      status++;
-      chechStatus();
-    });
+    if (socket != null) {
+      String roomId = ref.watch(roomIdProvider) ?? '-1';
+      WebSocket ws = SocketService().buildSocketConnection(roomId, 1);
+      setState(() {
+        socket = ws;
+        status++;
+      });
+    }
+
+    chechStatus();
     handleMessages();
   }
 
@@ -87,40 +88,45 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   fetchAllMessages() async {
-    print("fetchAllMessages");
-    String roomId = ref.watch(roomIdProvider) ?? '-1';
-    List<MessageModel> messages =
-        await ApiService().messagesInRoom(roomId) ?? [];
+    if (ref.read(messageProvider).isEmpty) {
+      String roomId = ref.watch(roomIdProvider) ?? '-1';
+      List<MessageModel> messages =
+          await ApiService().messagesInRoom(roomId) ?? [];
 
-    ref.read(messageProvider.notifier).addAllMessages(messages);
-    setState(() {
-      status++;
-      chechStatus();
-    });
+      ref.read(messageProvider.notifier).addAllMessages(messages);
+      setState(() {
+        status++;
+      });
+    }
+
+    chechStatus();
   }
 
   fetchAllUsers() async {
-    print("fetchAllUsers");
-    String roomId = ref.watch(roomIdProvider) ?? '-1';
-    List<UserModel> usrs = await ApiService().allUsersInRoom(roomId) ?? [];
-    ref.read(usersInRoomProvider.notifier).addAllUsers(usrs);
-    setState(() {
-      status++;
-      chechStatus();
-    });
+    if (ref.read(usersInRoomProvider).isEmpty) {
+      String roomId = ref.watch(roomIdProvider) ?? '-1';
+      List<UserModel> usrs = await ApiService().allUsersInRoom(roomId) ?? [];
+      ref.read(usersInRoomProvider.notifier).addAllUsers(usrs);
+      setState(() {
+        status++;
+      });
+    }
+
+    chechStatus();
   }
 
   fetchRoom() async {
-    print("fetchRoom");
-    String roomId = ref.watch(roomIdProvider) ?? '-1';
-    RoomModel? room = await ApiService().getRoom(roomId);
-    if (room != null) {
-      ref.read(roomProvider.notifier).addRoom(room);
-      setState(() {
-        status++;
-        chechStatus();
-      });
+    if (ref.read(roomProvider) == null) {
+      String roomId = ref.watch(roomIdProvider) ?? '-1';
+      RoomModel? room = await ApiService().getRoom(roomId);
+      if (room != null) {
+        ref.read(roomProvider.notifier).addRoom(room);
+        setState(() {
+          status++;
+        });
+      }
     }
+    chechStatus();
   }
 
   @override
@@ -134,8 +140,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             appBar: AppBar(
               elevation: 0,
               toolbarHeight: 0.0,
-              systemOverlayStyle: const SystemUiOverlayStyle(
-                  statusBarColor: Color.fromARGB(255, 55, 55, 55)),
+              systemOverlayStyle:
+                  const SystemUiOverlayStyle(statusBarColor: Color(0xff111216)),
             ),
             body: SafeArea(
               child: Column(
