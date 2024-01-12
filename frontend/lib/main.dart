@@ -8,6 +8,7 @@ import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/screens/chat_page.dart';
+import 'package:private_chat/screens/login_screen.dart';
 import 'package:private_chat/services/api_services.dart';
 import 'firebase_options.dart';
 
@@ -45,7 +46,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   addIdsToTheProviders() {
     UserModel user = UserModel(
-        name: "bhaskar", phone: "98465", id: 1, fcmtoken: "xdrcvftgy");
+        name: "Omkar", phone: "98465", id: 2, fcmtoken: "xdrcvftgy");
     ref.read(userProvider.notifier).addUser(user);
   }
 
@@ -80,12 +81,8 @@ class _MyAppState extends ConsumerState<MyApp> {
   }
 
   sendTokenToServer(String token) async {
-    int userId = 1; //TODO: get userId
-    if (kIsWeb) {
-      ApiService().updateWebFcmToken(token, userId);
-    } else {
-      ApiService().updateFcmToken(token, userId);
-    }
+    int userId = 2; //TODO: get userId
+    ApiService().updateFcmToken(token, userId);
   }
 
   setupFirebaseListeners() {
@@ -101,7 +98,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Our Chat App',
-      home: ChatPage(),
+      home: LoginScreen(),
     );
   }
 }
