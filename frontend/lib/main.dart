@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:private_chat/models/user_model.dart';
-import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/screens/chat_page.dart';
 import 'package:private_chat/screens/login_screen.dart';
@@ -13,7 +12,11 @@ import 'package:private_chat/services/api_services.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  await dotenv.load(fileName: "env");
+  if (kIsWeb) {
+    await dotenv.load(fileName: "env-web");
+  } else {
+    await dotenv.load(fileName: "env");
+  }
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

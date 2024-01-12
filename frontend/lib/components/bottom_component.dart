@@ -24,7 +24,6 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
   void sendMessage() {
     String text = messageController.text.trim();
 
-    String roomId = "AA45";
     UserModel user = UserModel(
         name: "bhaskar", phone: "98465", id: 1, fcmtoken: "xdrcvftgy");
 

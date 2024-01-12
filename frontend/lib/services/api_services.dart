@@ -7,7 +7,8 @@ import 'package:private_chat/models/room_model.dart';
 import 'package:private_chat/models/user_model.dart';
 
 class ApiService {
-  String backendUrl = "${dotenv.env['backendIp']!}:${dotenv.env['port']!}";
+  // String backendUrl = "${dotenv.env['backendIp']!}:${dotenv.env['port']!}";
+  String backendUrl = dotenv.env["backendIp"]!;
 
   Future<UserModel?> getUser(int id) async {
     try {

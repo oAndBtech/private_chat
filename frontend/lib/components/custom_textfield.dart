@@ -1,12 +1,45 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'dart:io';
 
-class CustomTextfield extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:private_chat/models/message_model.dart';
+import 'package:private_chat/providers/message_provider.dart';
+
+class CustomTextfield extends ConsumerStatefulWidget {
   const CustomTextfield({
     super.key,
     required this.messageController,
   });
   final TextEditingController messageController;
+
+  @override
+  ConsumerState<CustomTextfield> createState() => _CustomTextfieldState();
+}
+
+class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
+  List<XFile> selectedFiles = [];
+
+  final ImagePicker _picker = ImagePicker();
+  Future<void> pickImage(ImageSource source) async {
+    final pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null) {
+      List<MessageModel> msgs = [];
+      for (XFile element in pickedFiles) {
+        List<int> imageBytes = await element.readAsBytes();
+        MessageModel msg =
+            MessageModel(istext: false, content: imageBytes, sender: 1);
+        msgs.add(msg);
+      }
+
+      ref.read(messageProvider.notifier).addAllMessages(msgs);
+
+      setState(() {
+        selectedFiles = pickedFiles;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +56,28 @@ class CustomTextfield extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 8, bottom: 11, right: 6),
-            child: Icon(
-              Icons.add,
-              color: Colors.grey,
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 2,
+              bottom: 5,
+            ),
+            child: InkWell(
+              onTap: () {
+                pickImage(ImageSource.gallery);
+              },
+              borderRadius: BorderRadius.circular(36),
+              child: const Padding(
+                padding: EdgeInsets.all(6.0),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.grey,
+                ),
+              ),
             ),
           ),
           Expanded(
             child: TextField(
-              controller: messageController,
+              controller: widget.messageController,
               textAlign: TextAlign.start,
               decoration: InputDecoration(
                 hintText: 'Message...',

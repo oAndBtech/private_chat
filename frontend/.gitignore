@@ -45,3 +45,4 @@ app.*.map.json
 
 #.env changed to env for web app
 env
+env-web

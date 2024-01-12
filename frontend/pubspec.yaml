@@ -43,6 +43,8 @@ dependencies:
   web_socket_client: ^0.1.0
   firebase_core: ^2.24.2
   firebase_messaging: ^14.7.10
+  permission_handler: ^11.0.1
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +71,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - env
+    - env-web
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

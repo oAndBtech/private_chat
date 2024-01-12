@@ -64,7 +64,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
     return Container(
       height: 62,
       width: double.infinity,
-      color: const Color(0xff000000).withOpacity(0.6),
+      color: const Color(0xff111216),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
         child: Row(
