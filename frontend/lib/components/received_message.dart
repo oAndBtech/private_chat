@@ -2,46 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:private_chat/components/img_container.dart';
 import 'package:private_chat/models/message_model.dart';
 
-//TODO: timestamp alignment
-
-class ReceivedMessage extends StatefulWidget {
+class ReceivedMessage extends StatelessWidget {
   const ReceivedMessage({required this.message, super.key});
 
   final MessageModel message;
 
   @override
-  State<ReceivedMessage> createState() => _ReceivedMessageState();
-}
-
-class _ReceivedMessageState extends State<ReceivedMessage> {
-  // UserModel user = UserModel(
-  //       name: "bhaskar", phone: "98465", id: 1, fcmtoken: "xdrcvftgy");
-
-  // fetchUser() {
-  //   //TODO: call api (/user/message.sender)
-  // }
-
-  String formatTimestamp(String timestampString) {
-    DateTime timestamp = DateTime.parse(timestampString).toLocal();
-    DateTime currentDate = DateTime.now();
-    if (timestamp.year == currentDate.year &&
-        timestamp.month == currentDate.month &&
-        timestamp.day == currentDate.day) {
-      return DateFormat('hh:mm a').format(timestamp);
-    } else {
-      return DateFormat('hh:mm a, dd-MM-yyyy').format(timestamp);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    // String msg = utf8.decode(widget.message.content);
-
     return Align(
       alignment: Alignment.centerLeft,
       child: Stack(
@@ -67,7 +38,7 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.message.sendername!,
+                    message.sendername!,
                     style: GoogleFonts.montserrat(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -75,13 +46,13 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
                       color: Colors.blue,
                     ),
                   ),
-                  !widget.message.istext
+                  !message.istext
                       ? ImageContainer(
-                          url: utf8.decode(widget.message.content),
+                          url: utf8.decode(message.content),
                           isUrl: true,
                         )
                       : Text(
-                          utf8.decode(widget.message.content),
+                          utf8.decode(message.content),
                           style: GoogleFonts.montserrat(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
@@ -99,8 +70,7 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                formatTimestamp(
-                    widget.message.timestamp ?? DateTime.now().toString()),
+                message.timestamp!,
                 style: GoogleFonts.montserrat(
                   fontSize: 10,
                   fontWeight: FontWeight.w400,

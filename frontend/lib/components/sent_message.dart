@@ -2,33 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:private_chat/components/img_container.dart';
 import 'package:private_chat/models/message_model.dart';
-import 'package:private_chat/models/user_model.dart';
 
-class SentMessage extends StatefulWidget {
+class SentMessage extends StatelessWidget {
   const SentMessage({required this.message, super.key});
   final MessageModel message;
-
-  @override
-  State<SentMessage> createState() => _SentMessageState();
-}
-
-class _SentMessageState extends State<SentMessage> {
-  UserModel? user;
-
-  String formatTimestamp(String timestampString) {
-    DateTime timestamp = DateTime.parse(timestampString).toLocal();
-    DateTime currentDate = DateTime.now();
-    if (timestamp.year == currentDate.year &&
-        timestamp.month == currentDate.month &&
-        timestamp.day == currentDate.day) {
-      return DateFormat('hh:mm a').format(timestamp);
-    } else {
-      return DateFormat('hh:mm a, dd-MM-yyyy').format(timestamp);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,18 +35,18 @@ class _SentMessageState extends State<SentMessage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  widget.message.isOffline != null && widget.message.isOffline!
+                  message.isOffline != null && message.isOffline!
                       ? ImageContainer(
-                          bytes: widget.message.content,
+                          bytes: message.content,
                           isUrl: false,
                         )
-                      : !widget.message.istext
+                      : !message.istext
                           ? ImageContainer(
-                              url: utf8.decode(widget.message.content),
+                              url: utf8.decode(message.content),
                               isUrl: true,
                             )
                           : Text(
-                              utf8.decode(widget.message.content),
+                              utf8.decode(message.content),
                               style: GoogleFonts.montserrat(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
@@ -85,8 +64,7 @@ class _SentMessageState extends State<SentMessage> {
             child: Padding(
               padding: const EdgeInsets.all(4),
               child: Text(
-                formatTimestamp(
-                    widget.message.timestamp ?? DateTime.now().toString()),
+                    message.timestamp!,
                 style: GoogleFonts.montserrat(
                   fontSize: 10,
                   fontWeight: FontWeight.w400,

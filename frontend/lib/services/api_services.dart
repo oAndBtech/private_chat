@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:private_chat/models/message_model.dart';
 import 'package:private_chat/models/room_model.dart';
 import 'package:private_chat/models/user_model.dart';
@@ -9,6 +10,18 @@ import 'package:private_chat/models/user_model.dart';
 class ApiService {
   // String backendUrl = "${dotenv.env['backendIp']!}:${dotenv.env['port']!}";
   String backendUrl = dotenv.env["backendIp"]!;
+
+  String formatTimestamp(String timestampString) {
+    DateTime timestamp = DateTime.parse(timestampString).toLocal();
+    DateTime currentDate = DateTime.now();
+    if (timestamp.year == currentDate.year &&
+        timestamp.month == currentDate.month &&
+        timestamp.day == currentDate.day) {
+      return DateFormat('hh:mm a').format(timestamp);
+    } else {
+      return DateFormat('hh:mm a, dd-MM-yyyy').format(timestamp);
+    }
+  }
 
   Future<UserModel?> getUser(int id) async {
     try {
@@ -95,7 +108,6 @@ class ApiService {
       return false;
     }
   }
-
 
   Future<bool> deleteUser(int id) async {
     try {
@@ -192,13 +204,15 @@ class ApiService {
 
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = jsonDecode(response.body);
+
         return jsonResponse
             .map((message) => MessageModel(
                 id: message["id"],
                 sender: message["sender"],
                 sendername: message["sendername"],
                 istext: message["istext"],
-                timestamp: message["timestamp"],
+                timestamp: formatTimestamp(
+                    message["timestamp"] ?? DateTime.now().toString()),
                 content: base64Decode(message["content"])))
             .toList();
       }

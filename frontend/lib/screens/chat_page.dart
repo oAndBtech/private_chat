@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:private_chat/components/appbar.dart';
 import 'package:private_chat/components/bottom_component.dart';
 import 'package:private_chat/components/message_list.dart';
@@ -77,11 +78,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
         MessageModel receivedMessage = MessageModel(
             sender: jsonResponse["senderId"],
-            timestamp: jsonResponse["timestamp"],
+            timestamp:
+                formatTimestamp(jsonResponse["timestamp"] ?? DateTime.now()),
             sendername: jsonResponse["sender"],
             istext: jsonResponse["istext"],
             content: content);
-
         ref.read(messageProvider.notifier).addMessage(receivedMessage);
       });
     }
@@ -111,7 +112,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         status++;
       });
     }
-
     chechStatus();
   }
 
@@ -129,11 +129,23 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     chechStatus();
   }
 
+  String formatTimestamp(String timestampString) {
+    DateTime timestamp = DateTime.parse(timestampString).toLocal();
+    DateTime currentDate = DateTime.now();
+    if (timestamp.year == currentDate.year &&
+        timestamp.month == currentDate.month &&
+        timestamp.day == currentDate.day) {
+      return DateFormat('hh:mm a').format(timestamp);
+    } else {
+      return DateFormat('hh:mm a, dd-MM-yyyy').format(timestamp);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     List<MessageModel> messages = ref.watch(messageProvider);
     return isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator())
         : Scaffold(
             backgroundColor: const Color(0xff282C34),
             appBar: AppBar(
@@ -144,7 +156,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             ),
             body: SafeArea(
               child: Column(
-                // mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   const CustomAppBar(),
                   Expanded(child: MessageList(messages: messages)),
