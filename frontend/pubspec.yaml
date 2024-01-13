@@ -49,6 +49,7 @@ dependencies:
   flutter_image_compress: ^2.1.0
   font_awesome_flutter: ^10.6.0
   cached_network_image: ^3.3.1
+  photo_view: ^0.14.0
 
 dev_dependencies:
   flutter_test:

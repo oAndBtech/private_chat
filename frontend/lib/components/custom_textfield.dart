@@ -7,8 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:private_chat/models/message_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
 import 'package:private_chat/providers/room_provider.dart';
-import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/screens/storage_service.dart';
+import 'package:private_chat/services/api_services.dart';
 import 'package:private_chat/services/socket_services.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -40,7 +40,7 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
 
   await Future.wait(files.map((XFile element) async {
     List<int> imageBytes = await element.readAsBytes();
-    MessageModel msg = MessageModel(istext: false, content: imageBytes, sender: userId,isOffline: true);
+    MessageModel msg = MessageModel(istext: false, content: imageBytes, sender: userId,isOffline: true,timestamp: ApiService().formatTimestamp(DateTime.now().toString()));
     ref.read(messageProvider.notifier).addMessage(msg);
 
     String? img = await StorageService().uploadImage(File(element.path), '$storagePath/$roomId/$userId');
@@ -54,7 +54,6 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
     selectedFiles = files;
   });
 }
-
 
   @override
   Widget build(BuildContext context) {

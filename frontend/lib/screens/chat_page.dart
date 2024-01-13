@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:private_chat/components/appbar.dart';
 import 'package:private_chat/components/bottom_component.dart';
@@ -146,22 +148,64 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     List<MessageModel> messages = ref.watch(messageProvider);
     return isLoading
         ? const Center(child: CircularProgressIndicator())
-        : Scaffold(
-            backgroundColor: const Color(0xff282C34),
-            appBar: AppBar(
-              elevation: 0,
-              toolbarHeight: 0.0,
-              systemOverlayStyle:
-                  const SystemUiOverlayStyle(statusBarColor: Color(0xff111216)),
-            ),
-            body: SafeArea(
-              child: Column(
-                children: [
-                  const CustomAppBar(),
-                  Expanded(child: MessageList(messages: messages)),
-                  BottomComponent(socket: socket)
-                ],
-              ),
-            ));
+        : WillPopScope(
+            onWillPop: () async {
+              return await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      backgroundColor: Color(0xff111216),
+                      title: Text(
+                        'Are you sure you want to exit?',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xffFFFFFF)),
+                      ),
+                      actions: [
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('Cancel',
+                                style: GoogleFonts.montserrat(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff000000)))),
+                        ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateColor.resolveWith(
+                                    (states) =>
+                                        Color.fromARGB(255, 50, 153, 101))),
+                            onPressed: () {
+                              exit(0);
+                            },
+                            child: Text('Exit',
+                                style: GoogleFonts.montserrat(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff000000))))
+                      ],
+                    ),
+                  ) ??
+                  false;
+            },
+            child: Scaffold(
+                backgroundColor: const Color(0xff282C34),
+                appBar: AppBar(
+                  elevation: 0,
+                  toolbarHeight: 0.0,
+                  systemOverlayStyle: const SystemUiOverlayStyle(
+                      statusBarColor: Color(0xff111216)),
+                ),
+                body: SafeArea(
+                  child: Column(
+                    children: [
+                      const CustomAppBar(),
+                      Expanded(child: MessageList(messages: messages)),
+                      BottomComponent(socket: socket)
+                    ],
+                  ),
+                )),
+          );
   }
 }

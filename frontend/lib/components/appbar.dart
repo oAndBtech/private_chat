@@ -9,7 +9,6 @@ import 'package:private_chat/models/room_model.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/providers/users_in_room_provider.dart';
-import 'package:private_chat/services/api_services.dart';
 
 class CustomAppBar extends ConsumerStatefulWidget {
   const CustomAppBar({super.key});
@@ -85,40 +84,43 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  showDialog(context: context, builder: ((context) => AlertDialog(
-                    backgroundColor: Color(0xff111216),
-                    title: Text(
-                      'Are you sure you want to exit?',
-                      style: GoogleFonts.montserrat(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xffFFFFFF)),
-                    ),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text('Cancel',
+                  showDialog(
+                      context: context,
+                      builder: ((context) => AlertDialog(
+                            backgroundColor: Color(0xff111216),
+                            title: Text(
+                              'Are you sure you want to exit?',
                               style: GoogleFonts.montserrat(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff000000)))),
-                      ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateColor.resolveWith(
-                                  (states) =>
-                                      Color.fromARGB(255, 50, 153, 101))),
-                          onPressed: () {
-                            exit(0);
-                          },
-                          child: Text('Exit',
-                              style: GoogleFonts.montserrat(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff000000))))
-                    ],
-                  )));
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xffFFFFFF)),
+                            ),
+                            actions: [
+                              ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Cancel',
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xff000000)))),
+                              ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateColor.resolveWith(
+                                              (states) => Color.fromARGB(
+                                                  255, 50, 153, 101))),
+                                  onPressed: () {
+                                    exit(0);
+                                  },
+                                  child: Text('Exit',
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xff000000))))
+                            ],
+                          )));
                 },
                 child: const Icon(
                   FontAwesomeIcons.xmark,

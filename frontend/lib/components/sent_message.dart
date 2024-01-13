@@ -30,7 +30,8 @@ class SentMessage extends StatelessWidget {
               color: Color.fromARGB(188, 50, 153, 102),
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 18),
+              
+              padding: message.istext? const EdgeInsets.fromLTRB(8, 8, 8, 18) : const EdgeInsets.fromLTRB(3, 3, 3, 21),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,

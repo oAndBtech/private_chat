@@ -13,7 +13,7 @@ import 'firebase_options.dart';
 
 void main() async {
   if (kIsWeb) {
-    await dotenv.load(fileName: "env-web");
+    await dotenv.load(fileName: "env");
   } else {
     await dotenv.load(fileName: "env");
   }
