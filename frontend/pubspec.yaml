@@ -47,6 +47,7 @@ dependencies:
   image_picker: ^1.0.7
   firebase_storage: ^11.6.0
   flutter_image_compress: ^2.1.0
+  font_awesome_flutter: ^10.6.0
 
 dev_dependencies:
   flutter_test:

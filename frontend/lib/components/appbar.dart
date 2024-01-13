@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:private_chat/components/members_element.dart';
 import 'package:private_chat/models/room_model.dart';
@@ -23,7 +26,6 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
     super.didChangeDependencies();
   }
 
-
 //TODO: need to work on design
   groupMembersDialog() {
     return AlertDialog(
@@ -31,13 +33,12 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
       title: Text(
         "Group Members",
         style: GoogleFonts.montserrat(
-          fontSize: 21,
-          fontWeight: FontWeight.w500,
-          color: Color(0xffFFFFFF)
-        ),
-        ),
+            fontSize: 21,
+            fontWeight: FontWeight.w500,
+            color: Color(0xffFFFFFF)),
+      ),
       content: Padding(
-        padding: const EdgeInsets.fromLTRB(6,0,12,0),
+        padding: const EdgeInsets.fromLTRB(6, 0, 12, 0),
         child: Container(
             child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -47,13 +48,13 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
       ),
     );
   }
+
   List<Widget> generateList() {
     List<UserModel> usrs = ref.watch(usersInRoomProvider);
     List<Widget> list = List.generate(
         usrs.length,
-        (index) => MemberElement(name: usrs[index].name, number: usrs[index].phone)
-
-            );
+        (index) =>
+            MemberElement(name: usrs[index].name, number: usrs[index].phone));
     return list;
   }
 
@@ -80,10 +81,51 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            const Icon(
-              Icons.arrow_back,
-              size: 28,
-              color: Color(0xffFFFFFF),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  showDialog(context: context, builder: ((context) => AlertDialog(
+                    backgroundColor: Color(0xff111216),
+                    title: Text(
+                      'Are you sure you want to exit?',
+                      style: GoogleFonts.montserrat(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xffFFFFFF)),
+                    ),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Cancel',
+                              style: GoogleFonts.montserrat(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xff000000)))),
+                      ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateColor.resolveWith(
+                                  (states) =>
+                                      Color.fromARGB(255, 50, 153, 101))),
+                          onPressed: () {
+                            exit(0);
+                          },
+                          child: Text('Exit',
+                              style: GoogleFonts.montserrat(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xff000000))))
+                    ],
+                  )));
+                },
+                child: const Icon(
+                  FontAwesomeIcons.xmark,
+                  size: 28,
+                  color: Color(0xffFFFFFF),
+                ),
+              ),
             ),
             const SizedBox(
               width: 20,
