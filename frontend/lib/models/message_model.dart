@@ -6,6 +6,7 @@ class MessageModel {
   final String? timestamp;
   final List<int> content; 
   final String? sendername;
+  final bool? isOffline;
 
   MessageModel({
     this.id,
@@ -14,6 +15,7 @@ class MessageModel {
     required this.istext,
     this.timestamp,
     required this.content,
-    this.sendername
+    this.sendername,
+    this.isOffline
   });
 }

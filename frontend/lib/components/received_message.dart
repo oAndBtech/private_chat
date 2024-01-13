@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:private_chat/components/img_container.dart';
 import 'package:private_chat/models/message_model.dart';
 
 //TODO: timestamp alignment
@@ -39,7 +40,7 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    String msg = utf8.decode(widget.message.content);
+    // String msg = utf8.decode(widget.message.content);
 
     return Align(
       alignment: Alignment.centerLeft,
@@ -74,15 +75,20 @@ class _ReceivedMessageState extends State<ReceivedMessage> {
                       color: Colors.blue,
                     ),
                   ),
-                  Text(
-                    msg,
-                    style: GoogleFonts.montserrat(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: -0.2,
-                      color: const Color(0xff000000),
-                    ),
-                  ),
+                  !widget.message.istext
+                      ? ImageContainer(
+                          url: utf8.decode(widget.message.content),
+                          isUrl: true,
+                        )
+                      : Text(
+                          utf8.decode(widget.message.content),
+                          style: GoogleFonts.montserrat(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: -0.2,
+                            color: const Color(0xff000000),
+                          ),
+                        ),
                 ],
               ),
             ),

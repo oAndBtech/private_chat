@@ -45,6 +45,8 @@ dependencies:
   firebase_messaging: ^14.7.10
   permission_handler: ^11.0.1
   image_picker: ^1.0.7
+  firebase_storage: ^11.6.0
+  flutter_image_compress: ^2.1.0
 
 dev_dependencies:
   flutter_test:

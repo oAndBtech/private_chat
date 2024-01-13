@@ -2,9 +2,11 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 class ImageContainer extends StatelessWidget {
-  const ImageContainer({Key? key, required this.bytes}) : super(key: key);
-
-  final List<int> bytes;
+  const ImageContainer({Key? key, this.bytes, this.isUrl = true, this.url})
+      : super(key: key);
+  final bool isUrl;
+  final List<int>? bytes;
+  final String? url;
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +18,15 @@ class ImageContainer extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: Image.memory(
-          Uint8List.fromList(bytes),
-          fit: BoxFit.cover,
-        ),
+        child: isUrl
+            ? Image.network(
+                url!,
+                fit: BoxFit.cover,
+              )
+            : Image.memory(
+                Uint8List.fromList(bytes!),
+                fit: BoxFit.cover,
+              ),
       ),
     );
   }

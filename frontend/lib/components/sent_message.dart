@@ -18,10 +18,6 @@ class SentMessage extends StatefulWidget {
 class _SentMessageState extends State<SentMessage> {
   UserModel? user;
 
-  fetchUser() {
-    //TODO: call api (/user/message.sender)
-  }
-
   String formatTimestamp(String timestampString) {
     DateTime timestamp = DateTime.parse(timestampString).toLocal();
     DateTime currentDate = DateTime.now();
@@ -60,17 +56,25 @@ class _SentMessageState extends State<SentMessage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  !widget.message.istext
-                      ? ImageContainer(bytes: widget.message.content)
-                      : Text(
-                          utf8.decode(widget.message.content),
-                          style: GoogleFonts.montserrat(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: -0.2,
-                            color: const Color(0xff000000),
-                          ),
-                        ),
+                  widget.message.isOffline != null && widget.message.isOffline!
+                      ? ImageContainer(
+                          bytes: widget.message.content,
+                          isUrl: false,
+                        )
+                      : !widget.message.istext
+                          ? ImageContainer(
+                              url: utf8.decode(widget.message.content),
+                              isUrl: true,
+                            )
+                          : Text(
+                              utf8.decode(widget.message.content),
+                              style: GoogleFonts.montserrat(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: -0.2,
+                                color: const Color(0xff000000),
+                              ),
+                            ),
                 ],
               ),
             ),

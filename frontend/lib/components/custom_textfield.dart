@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:private_chat/models/message_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
+import 'package:private_chat/providers/room_provider.dart';
+import 'package:private_chat/providers/user_provider.dart';
+import 'package:private_chat/screens/storage_service.dart';
 import 'package:private_chat/services/socket_services.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -22,24 +27,34 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
 
   final ImagePicker _picker = ImagePicker();
   Future<void> pickImage(ImageSource source) async {
-    final pickedFiles = await _picker.pickMultiImage();
+    final pickedFiles = await _picker.pickMultiImage(imageQuality: 10);
     if (pickedFiles.isNotEmpty) {
-      List<MessageModel> msgs = [];
-      for (XFile element in pickedFiles) {
-        List<int> imageBytes = await element.readAsBytes();
-        MessageModel msg =
-            MessageModel(istext: false, content: imageBytes, sender: 1);
-        msgs.add(msg);
-        SocketService().sendImage(imageBytes, widget.socket, false);
-      }
-
-      ref.read(messageProvider.notifier).addAllMessages(msgs);
-
-      setState(() {
-        selectedFiles = pickedFiles;
-      });
+      uploadImages(pickedFiles, 'images');
     }
   }
+
+  Future<void> uploadImages(List<XFile> files, String storagePath) async {
+  String roomId = ref.read(roomIdProvider) ?? '-1';
+  int userId = 1;
+
+
+  await Future.wait(files.map((XFile element) async {
+    List<int> imageBytes = await element.readAsBytes();
+    MessageModel msg = MessageModel(istext: false, content: imageBytes, sender: userId,isOffline: true);
+    ref.read(messageProvider.notifier).addMessage(msg);
+
+    String? img = await StorageService().uploadImage(File(element.path), '$storagePath/$roomId/$userId');
+
+    if (img != null) {
+      SocketService().sendMessage(img, widget.socket, false);
+    }
+  }));
+
+  setState(() {
+    selectedFiles = files;
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {

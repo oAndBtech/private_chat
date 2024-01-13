@@ -60,10 +60,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                       width: 2,
-                      color: Color(0xffFFFFFF).withOpacity(0.7),
+                      color: const Color(0xffFFFFFF).withOpacity(0.7),
                     )),
-                    // enabledBorder: OutlineInputBorder(),
-                    border: OutlineInputBorder()),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                      color: const Color.fromARGB(255, 212, 212, 212).withOpacity(0.7),
+                    )),
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                      color: Color.fromARGB(255, 212, 212, 212).withOpacity(0.7),
+                    ))),
               ),
             ],
           ),
