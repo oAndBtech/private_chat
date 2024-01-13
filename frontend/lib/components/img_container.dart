@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageContainer extends StatelessWidget {
@@ -19,11 +20,14 @@ class ImageContainer extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: isUrl
-            ? Image.network(
-                url!,
+            ? CachedNetworkImage(
+                imageUrl: url!,
                 fit: BoxFit.cover,
+                placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               )
-            : Image.memory(
+            :
+            Image.memory(
                 Uint8List.fromList(bytes!),
                 fit: BoxFit.cover,
               ),
