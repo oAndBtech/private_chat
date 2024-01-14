@@ -5,16 +5,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/screens/chat_page.dart';
+import 'package:private_chat/screens/login_screen.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends ConsumerStatefulWidget {
+  const SignUpScreen(
+      {
+      // required this.controller,
+      super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
-  TextEditingController controller = TextEditingController();
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+  TextEditingController name_controller = TextEditingController();
+  TextEditingController phone_controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             elevation: 20,
             backgroundColor: Color(0xff111216),
             title: Text(
-              'Enter your Room ID',
+              'Enter your details',
               style: GoogleFonts.montserrat(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
@@ -40,10 +45,50 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
-                  controller: controller,
+                  controller: name_controller,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please Enter a valid Room ID!";
+                      return "Please Enter a valid name!";
+                    }
+                    return null;
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: GoogleFonts.montserrat(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: -0.2,
+                      color: const Color(0xffFFFFFF)),
+                  cursorColor: Color(0xffFFFFFF).withOpacity(0.7),
+                  decoration: InputDecoration(
+                      labelText: 'Your name',
+                      labelStyle: GoogleFonts.montserrat(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xffFFFFFF).withOpacity(0.7)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                        width: 2,
+                        color: const Color(0xffFFFFFF).withOpacity(0.7),
+                      )),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                        color: const Color.fromARGB(255, 212, 212, 212)
+                            .withOpacity(0.7),
+                      )),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                        color:
+                            Color.fromARGB(255, 212, 212, 212).withOpacity(0.7),
+                      ))),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  controller: phone_controller,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter a valid phone number!";
                     }
                     return null;
                   },
@@ -60,6 +105,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         width: 2,
                         color: const Color(0xffFFFFFF).withOpacity(0.7),
                       )),
+                      labelText: 'Phone number',
+                      labelStyle: GoogleFonts.montserrat(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xffFFFFFF).withOpacity(0.7)),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                         color: const Color.fromARGB(255, 212, 212, 212)
@@ -93,11 +143,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       backgroundColor: MaterialStateColor.resolveWith(
                           (states) => Color.fromARGB(255, 50, 153, 101))),
                   onPressed: () {
-                    if (controller.text.trim().isNotEmpty) {
-                      ref.read(roomIdProvider.notifier).state =
-                          controller.text.trim();
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => ChatPage()));
+                    if (name_controller.text.trim().isNotEmpty &&
+                        phone_controller.text.trim().isNotEmpty) {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
                     } else {}
                   },
                   child: Text(

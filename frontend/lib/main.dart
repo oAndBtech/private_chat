@@ -8,6 +8,7 @@ import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/screens/chat_page.dart';
 import 'package:private_chat/screens/login_screen.dart';
+import 'package:private_chat/screens/sign_up_screen.dart';
 import 'package:private_chat/services/api_services.dart';
 import 'firebase_options.dart';
 
@@ -101,7 +102,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Our Chat App',
-      home: LoginScreen(),
+      home: SignUpScreen(),
     );
   }
 }
