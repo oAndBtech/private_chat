@@ -19,7 +19,6 @@ import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/providers/users_in_room_provider.dart';
 import 'package:private_chat/services/api_services.dart';
-import 'package:private_chat/services/shared_services.dart';
 import 'package:private_chat/services/socket_services.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -191,13 +190,13 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               return await showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      backgroundColor: Color(0xff111216),
+                      backgroundColor: const Color(0xff111216),
                       title: Text(
                         'Are you sure you want to exit?',
                         style: GoogleFonts.montserrat(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
-                            color: Color(0xffFFFFFF)),
+                            color: const Color(0xffFFFFFF)),
                       ),
                       actions: [
                         ElevatedButton(
@@ -208,12 +207,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                                 style: GoogleFonts.montserrat(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xff000000)))),
+                                    color: const Color(0xff000000)))),
                         ElevatedButton(
                             style: ButtonStyle(
                                 backgroundColor: MaterialStateColor.resolveWith(
                                     (states) =>
-                                        Color.fromARGB(255, 50, 153, 101))),
+                                        const Color.fromARGB(255, 50, 153, 101))),
                             onPressed: () {
                               exit(0);
                             },
@@ -221,7 +220,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                                 style: GoogleFonts.montserrat(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xff000000))))
+                                    color: const Color(0xff000000))))
                       ],
                     ),
                   ) ??

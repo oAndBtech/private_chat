@@ -66,7 +66,6 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
         color: const Color(0xff000000).withOpacity(0.6),
         borderRadius: BorderRadius.circular(20),
       ),
-      // padding: EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [

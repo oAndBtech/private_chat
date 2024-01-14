@@ -7,8 +7,6 @@ class SendButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-
     return InkWell(
       onTap: send,
       splashColor: Colors.transparent,

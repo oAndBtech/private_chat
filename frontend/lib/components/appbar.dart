@@ -18,32 +18,28 @@ class CustomAppBar extends ConsumerStatefulWidget {
 }
 
 class _CustomAppBarState extends ConsumerState<CustomAppBar> {
-  //TODO: fetch room name and people count, hardcoded right now
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
   }
 
-//TODO: need to work on design
   groupMembersDialog() {
     return AlertDialog(
-      backgroundColor: Color(0xff111216),
+      backgroundColor: const Color(0xff111216),
       title: Text(
         "Group Members",
         style: GoogleFonts.montserrat(
             fontSize: 21,
             fontWeight: FontWeight.w500,
-            color: Color(0xffFFFFFF)),
+            color: const Color(0xffFFFFFF)),
       ),
       content: Padding(
         padding: const EdgeInsets.fromLTRB(6, 0, 12, 0),
-        child: Container(
-            child: Column(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: generateList(),
-        )),
+        ),
       ),
     );
   }
@@ -87,13 +83,13 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                   showDialog(
                       context: context,
                       builder: ((context) => AlertDialog(
-                            backgroundColor: Color(0xff111216),
+                            backgroundColor: const Color(0xff111216),
                             title: Text(
                               'Are you sure you want to exit?',
                               style: GoogleFonts.montserrat(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
-                                  color: Color(0xffFFFFFF)),
+                                  color: const Color(0xffFFFFFF)),
                             ),
                             actions: [
                               ElevatedButton(
@@ -104,12 +100,12 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                                       style: GoogleFonts.montserrat(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
-                                          color: Color(0xff000000)))),
+                                          color: const Color(0xff000000)))),
                               ElevatedButton(
                                   style: ButtonStyle(
                                       backgroundColor:
                                           MaterialStateColor.resolveWith(
-                                              (states) => Color.fromARGB(
+                                              (states) => const Color.fromARGB(
                                                   255, 50, 153, 101))),
                                   onPressed: () {
                                     exit(0);
@@ -118,7 +114,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                                       style: GoogleFonts.montserrat(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
-                                          color: Color(0xff000000))))
+                                          color: const Color(0xff000000))))
                             ],
                           )));
                 },

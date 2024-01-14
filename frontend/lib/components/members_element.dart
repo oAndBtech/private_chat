@@ -22,7 +22,7 @@ class MemberElement extends StatelessWidget {
             style: GoogleFonts.montserrat(
               fontSize: 18,
               fontWeight: FontWeight.w400,
-              color: Color(0xffFFFFFF) 
+              color: const Color(0xffFFFFFF) 
             )
           )),
           RichText(text: TextSpan(
@@ -30,7 +30,7 @@ class MemberElement extends StatelessWidget {
             style: GoogleFonts.montserrat(
               fontSize: 11,
               fontWeight: FontWeight.w400,
-              color: Color(0xffBABABA) 
+              color: const Color(0xffBABABA) 
             )
           ))
         ],

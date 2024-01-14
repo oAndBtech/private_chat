@@ -43,16 +43,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-
     return Scaffold(
-      backgroundColor: Color(0xff282C34),
+      backgroundColor: const Color(0xff282C34),
       body: SafeArea(
           child: Center(
         child: SingleChildScrollView(
           child: AlertDialog(
             elevation: 20,
-            backgroundColor: Color(0xff111216),
+            backgroundColor: const Color(0xff111216),
             title: Text(
               'Enter your details',
               style: GoogleFonts.montserrat(
@@ -78,7 +76,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       fontWeight: FontWeight.w400,
                       letterSpacing: -0.2,
                       color: const Color(0xffFFFFFF)),
-                  cursorColor: Color(0xffFFFFFF).withOpacity(0.7),
+                  cursorColor: const Color(0xffFFFFFF).withOpacity(0.7),
                   decoration: InputDecoration(
                       labelText: 'Your name',
                       labelStyle: GoogleFonts.montserrat(
@@ -98,10 +96,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       border: OutlineInputBorder(
                           borderSide: BorderSide(
                         color:
-                            Color.fromARGB(255, 212, 212, 212).withOpacity(0.7),
+                            const Color.fromARGB(255, 212, 212, 212).withOpacity(0.7),
                       ))),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 TextFormField(
@@ -128,7 +126,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       fontWeight: FontWeight.w400,
                       letterSpacing: -0.2,
                       color: const Color(0xffFFFFFF)),
-                  cursorColor: Color(0xffFFFFFF).withOpacity(0.7),
+                  cursorColor: const Color(0xffFFFFFF).withOpacity(0.7),
                   decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -148,7 +146,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       border: OutlineInputBorder(
                           borderSide: BorderSide(
                         color:
-                            Color.fromARGB(255, 212, 212, 212).withOpacity(0.7),
+                            const Color.fromARGB(255, 212, 212, 212).withOpacity(0.7),
                       ))),
                 ),
               ],
@@ -157,7 +155,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               ElevatedButton(
                   style: ButtonStyle(
                       backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Color(0xffBABABA))),
+                          (states) => const Color(0xffBABABA))),
                   onPressed: () {
                     exit(0);
                   },
@@ -166,12 +164,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     style: GoogleFonts.montserrat(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xff000000).withOpacity(0.7)),
+                        color: const Color(0xff000000).withOpacity(0.7)),
                   )),
               ElevatedButton(
                   style: ButtonStyle(
                       backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Color.fromARGB(255, 50, 153, 101))),
+                          (states) => const Color.fromARGB(255, 50, 153, 101))),
                   onPressed: () async {
                     if (nameController.text.trim().isNotEmpty &&
                         phoneController.text.trim().isNotEmpty) {
@@ -231,7 +229,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     style: GoogleFonts.montserrat(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xff000000).withOpacity(0.7)),
+                        color: const Color(0xff000000).withOpacity(0.7)),
                   )),
             ],
           ),

@@ -13,7 +13,6 @@ import 'package:web_socket_client/web_socket_client.dart';
 
 class BottomComponent extends ConsumerStatefulWidget {
   const BottomComponent({super.key, this.socket});
-  // final TextEditingController messageController;
   final WebSocket? socket;
   @override
   ConsumerState<BottomComponent> createState() => _BottomComponentState();
