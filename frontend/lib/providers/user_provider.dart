@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:private_chat/models/user_model.dart';
 
 final userIdProvider = StateProvider<int>((ref) => -1);
+final notificationProvider = StateProvider<bool>((ref) => true);
 final userProvider =
     StateNotifierProvider<UserNotifier, UserModel?>((ref) => UserNotifier());
 
@@ -13,7 +14,8 @@ class UserNotifier extends StateNotifier<UserModel?> {
         id: user.id,
         name: user.name,
         phone: user.phone,
-        fcmtoken: user.fcmtoken);
+        fcmtoken: user.fcmtoken,
+        webfcmtoken: user.webfcmtoken);
   }
 
   void updateName(String newName) {
@@ -22,6 +24,10 @@ class UserNotifier extends StateNotifier<UserModel?> {
 
   void updateFcmtoken(String newFcmtoken) {
     state = state?.copyWith(fcmtoken: newFcmtoken);
+  }
+
+  void updateWebFcmtoken(String newWebFcmtoken) {
+    state = state?.copyWith(webfcmtoken: newWebFcmtoken);
   }
 
   void updatePhone(String newPhone) {

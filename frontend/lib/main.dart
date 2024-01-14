@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/user_provider.dart';
@@ -19,18 +20,11 @@ void main() async {
   } else {
     await dotenv.load(fileName: "env");
   }
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // FirebaseMessaging messaging = FirebaseMessaging.instance;
-  // await messaging.requestPermission(
-  //     alert: true,
-  //     announcement: false,
-  //     badge: true,
-  //     carPlay: false,
-  //     sound: true,
-  //     provisional: false);
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -47,7 +41,18 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   // This widget is the root of your application.
+  // bool isLoading = true;
   bool isLoggedin = false;
+  int status = 0;
+
+  checkStatus() {
+    print(status);
+    if (status > 1) {
+      setState(() {
+        FlutterNativeSplash.remove();
+      });
+    }
+  }
 
   addUserToTheProviders(int id) async {
     UserModel? user = await ApiService().getUser(id);
@@ -76,15 +81,23 @@ class _MyAppState extends ConsumerState<MyApp> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       await handleMessage(message);
     });
+    setState(() {
+      status++;
+      checkStatus();
+    });
   }
 
   handleMessage(RemoteMessage message) async {}
 
   checkLoginStatus() async {
-    int? status = await SharedService().getUserId();
-    if (status != null) {
-      addUserToTheProviders(status);
+    int? id = await SharedService().getUserId();
+    if (id != null) {
+      await addUserToTheProviders(id);
     }
+    setState(() {
+      status++;
+      checkStatus();
+    });
   }
 
   @override
@@ -92,8 +105,8 @@ class _MyAppState extends ConsumerState<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Our Chat App',
-      // home: !isLoggedin ? const SignUpScreen() : const LoginScreen(),
-      home: ChatPage(),
+      home: !isLoggedin ? const SignUpScreen() : const LoginScreen(),
+      // home: ChatPage(),
     );
   }
 }

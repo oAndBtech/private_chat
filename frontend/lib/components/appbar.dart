@@ -8,6 +8,7 @@ import 'package:private_chat/components/members_element.dart';
 import 'package:private_chat/models/room_model.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/room_provider.dart';
+import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/providers/users_in_room_provider.dart';
 
 class CustomAppBar extends ConsumerStatefulWidget {
@@ -165,44 +166,10 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
               ),
             ),
             const Spacer(),
-            InkWell(
-              onTap: () {
-                // Drop
-                showMenu(
-                    context: context,
-                    position: RelativeRect.fill,
-                    items: <PopupMenuEntry>[
-                      const PopupMenuItem(
-                        value: 'logout',
-                        child: Text(
-                          'Logout',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'profile',
-                        child: Text(
-                          'Profile',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      PopupMenuItem(
-                          value: 'notif',
-                          child: ListTile(
-                            trailing: Switch(
-                                value: isNotif,
-                                onChanged: (v) {
-                                  //TODO:call api to change in db
-                                  setState(() {
-                                    isNotif = v;
-                                  });
-                                }),
-                            title: const Text("Notification",
-                                style: TextStyle(fontSize: 16)),
-                          )),
-                    ]);
+            GestureDetector(
+              onTapDown: (details) {
+                _showPopupMenu(context, details);
               },
-              borderRadius: BorderRadius.circular(36),
               child: const Icon(
                 Icons.more_vert_rounded,
                 size: 28,
@@ -213,5 +180,72 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
         ),
       ),
     );
+  }
+
+  void _showPopupMenu(BuildContext context, TapDownDetails details) {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final Offset tapPosition = overlay.globalToLocal(details.globalPosition);
+    showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        tapPosition.dx,
+        tapPosition.dy,
+        tapPosition.dx + 40,
+        tapPosition.dy + 40,
+      ),
+      items: <PopupMenuEntry>[
+        const PopupMenuItem(
+          value: 'logout',
+          child: Text(
+            'Logout',
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'profile',
+          child: Text(
+            'Profile',
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+        PopupMenuItem(
+          value: 'notif',
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return ListTile(
+                trailing: Switch(
+                  value: ref.watch(notificationProvider),
+                  onChanged: (v) {
+                    setState(() {
+                      ref.watch(notificationProvider.notifier).state = v;
+                    });
+                    // TODO: Call API to change in the database
+                  },
+                ),
+                title: const Text(
+                  "Notification",
+                  style: TextStyle(fontSize: 16),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    ).then((value) {
+      switch (value) {
+        case "logout":
+          //TODO:handle logout
+          break;
+        case "profile":
+          //TODO:open profile
+          break;
+        case "notif":
+          ref.watch(notificationProvider.notifier).state =
+              !ref.read(notificationProvider);
+          break;
+        default:
+      }
+    });
   }
 }

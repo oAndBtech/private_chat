@@ -52,21 +52,22 @@ class ApiService {
           "name": user.name,
           "phone": user.phone,
           "fcmtoken": user.fcmtoken,
+          "webfcmtoken": user.webfcmtoken
         }),
       );
 
       final jsonResponse = jsonDecode(response.body);
 
-      if (response.statusCode == 200 || response.statusCode == 205) {
+      if (response.statusCode == 200 || response.statusCode == 409) {
         if (jsonResponse["id"] != null &&
             jsonResponse["name"] != null &&
             jsonResponse["phone"] != null) {
           final userModel = UserModel(
-            id: jsonResponse["id"],
-            name: jsonResponse["name"],
-            phone: jsonResponse["phone"],
-            fcmtoken: jsonResponse["fcmtoken"],
-          );
+              id: jsonResponse["id"],
+              name: jsonResponse["name"],
+              phone: jsonResponse["phone"],
+              fcmtoken: jsonResponse["fcmtoken"],
+              webfcmtoken: jsonResponse["webfcmtoken"]);
           return ResponseData(response.statusCode, userModel);
         } else {
           print("Invalid response data");

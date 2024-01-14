@@ -194,7 +194,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             response.userModel.id ?? -1;
                         await SharedService()
                             .storeUserId(response.userModel.id);
-                        if (response.statusCode == 205) {
+                        if (response.statusCode == 409) {
                           if (mounted) {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
