@@ -18,7 +18,7 @@ func AddMessage(userId int, roomId string, msg []byte, isText bool, senderName s
 }
 
 func AllMessagesInRoom(roomId string) ([]model.MessageModel, error) {
-	query := "SELECT * FROM messages WHERE receiver = $1"
+	query := "SELECT * FROM messages WHERE receiver = $1 ORDER BY timestamp ASC"
 	rows, err := db.Query(query, roomId)
 	if err != nil {
 		return nil, fmt.Errorf("error getting all messages: %v", err)
