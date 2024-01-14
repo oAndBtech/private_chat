@@ -53,6 +53,8 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
     return list;
   }
 
+  bool isNotif = true;
+
   @override
   Widget build(BuildContext context) {
     int totalMembers = ref.watch(usersInRoomProvider).length;
@@ -163,10 +165,49 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
               ),
             ),
             const Spacer(),
-            const Icon(
-              Icons.more_vert_rounded,
-              size: 28,
-              color: Color(0xffFFFFFF),
+            InkWell(
+              onTap: () {
+                // Drop
+                showMenu(
+                    context: context,
+                    position: RelativeRect.fill,
+                    items: <PopupMenuEntry>[
+                      const PopupMenuItem(
+                        value: 'logout',
+                        child: Text(
+                          'Logout',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'profile',
+                        child: Text(
+                          'Profile',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      PopupMenuItem(
+                          value: 'notif',
+                          child: ListTile(
+                            trailing: Switch(
+                                value: isNotif,
+                                onChanged: (v) {
+                                  //TODO:call api to change in db
+                                  setState(() {
+                                    isNotif = v;
+                                  });
+                                }),
+                            title: const Text("Notification",
+                                style: TextStyle(fontSize: 16)),
+                          )),
+                    ]);
+              },
+              borderRadius: BorderRadius.circular(36),
+              child: const Icon(
+                Icons.more_vert_rounded,
+                size: 28,
+                color: Color(0xffFFFFFF),
+              ),
             )
           ],
         ),

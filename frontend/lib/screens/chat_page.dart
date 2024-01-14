@@ -86,7 +86,19 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   void initState() {
     super.initState();
+    requestForPermission();
     setupFirebase();
+  }
+
+  requestForPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        sound: true,
+        provisional: false);
   }
 
   buildSocketConnection() async {
@@ -94,7 +106,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       int userId = ref.watch(userIdProvider);
       String roomId = ref.watch(roomIdProvider) ?? '-1';
       if (userId == -1 || roomId == '-1') {
-        return;
+        // return;
       }
       WebSocket ws = SocketService().buildSocketConnection(roomId, userId);
       setState(() {
@@ -211,8 +223,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                         ElevatedButton(
                             style: ButtonStyle(
                                 backgroundColor: MaterialStateColor.resolveWith(
-                                    (states) =>
-                                        const Color.fromARGB(255, 50, 153, 101))),
+                                    (states) => const Color.fromARGB(
+                                        255, 50, 153, 101))),
                             onPressed: () {
                               exit(0);
                             },
