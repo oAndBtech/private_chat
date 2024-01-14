@@ -6,10 +6,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/user_provider.dart';
-import 'package:private_chat/screens/chat_page.dart';
 import 'package:private_chat/screens/login_screen.dart';
 import 'package:private_chat/screens/sign_up_screen.dart';
 import 'package:private_chat/services/api_services.dart';
+import 'package:private_chat/services/shared_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -46,48 +47,30 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   // This widget is the root of your application.
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  bool isLoggedin = false;
 
-  addIdsToTheProviders() {
-    UserModel user = UserModel(
-        name: "Omkar", phone: "98465", id: 2, fcmtoken: "xdrcvftgy");
-    ref.read(userProvider.notifier).addUser(user);
+  addUserToTheProviders(int id) async {
+    UserModel? user = await ApiService().getUser(id);
+    if (user == null) {
+      setState(() {
+        isLoggedin = false;
+      });
+    } else {
+      setState(() {
+        isLoggedin = true;
+      });
+      ref.read(userProvider.notifier).addUser(user);
+    }
   }
 
   @override
   void initState() {
     super.initState();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    addIdsToTheProviders();
-    // addRoomId();
-    setupFirebase();
     setupFirebaseListeners();
   }
 
-  setupFirebase() async {
-    if (kIsWeb) {
-      final fcmToken = await FirebaseMessaging.instance.getToken(
-          vapidKey:
-              "BLrhT_yN89tQv7TPDPaurZr6tmwrb1Rs0ckVbNwkTlsAi5S4lUJNkrXXodhCHKucDhjoy70XY0E90k99PeY5LlA");
-      if (fcmToken != null) {
-        await sendTokenToServer(fcmToken);
-      }
-      return;
-    }
-
-    String? token = await _firebaseMessaging.getToken();
-    if (token != null) {
-      await sendTokenToServer(token);
-    }
-    _firebaseMessaging.onTokenRefresh.listen((newToken) {
-      sendTokenToServer(newToken);
-    });
-  }
-
-  sendTokenToServer(String token) async {
-    int userId = 2; //TODO: get userId
-    ApiService().updateFcmToken(token, userId);
-  }
+  
 
   setupFirebaseListeners() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -97,12 +80,19 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   handleMessage(RemoteMessage message) async {}
 
+  checkLoginStatus() async {
+    int? status = await SharedService().getUserId();
+    if (status != null) {
+      addUserToTheProviders(status);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Our Chat App',
-      home: SignUpScreen(),
+      home: !isLoggedin ? const SignUpScreen() : const LoginScreen(),
     );
   }
 }

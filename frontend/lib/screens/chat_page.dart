@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,6 +29,8 @@ class ChatPage extends ConsumerStatefulWidget {
 }
 
 class _ChatPageState extends ConsumerState<ChatPage> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
   WebSocket? socket;
 
   int status = 0;
@@ -41,6 +45,31 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     }
   }
 
+  setupFirebase() async {
+    if (kIsWeb) {
+      final fcmToken = await FirebaseMessaging.instance.getToken(
+          vapidKey:
+              "BLrhT_yN89tQv7TPDPaurZr6tmwrb1Rs0ckVbNwkTlsAi5S4lUJNkrXXodhCHKucDhjoy70XY0E90k99PeY5LlA");
+      if (fcmToken != null) {
+        await sendTokenToServer(fcmToken);
+      }
+      return;
+    }
+
+    String? token = await _firebaseMessaging.getToken();
+    if (token != null) {
+      await sendTokenToServer(token);
+    }
+    _firebaseMessaging.onTokenRefresh.listen((newToken) {
+      sendTokenToServer(newToken);
+    });
+  }
+
+  sendTokenToServer(String token) async {
+    int userId = 2;
+    ApiService().updateFcmToken(token, userId);
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -53,6 +82,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   void initState() {
     super.initState();
+    setupFirebase();
   }
 
   buildSocketConnection() {

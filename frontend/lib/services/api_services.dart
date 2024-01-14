@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:private_chat/models/add_user_response.dart';
 import 'package:private_chat/models/message_model.dart';
 import 'package:private_chat/models/room_model.dart';
 import 'package:private_chat/models/user_model.dart';
 
 class ApiService {
-  // String backendUrl = "${dotenv.env['backendIp']!}:${dotenv.env['port']!}";
   String backendUrl = dotenv.env["backendIp"]!;
 
   String formatTimestamp(String timestampString) {
@@ -44,23 +44,36 @@ class ApiService {
     }
   }
 
-  Future<UserModel?> addUser(UserModel user) async {
+  Future<ResponseData?> addUser(UserModel user) async {
     try {
-      final response = await http.post(Uri.parse("$backendUrl/user"),
-          body: jsonEncode({
-            "name": user.name,
-            "phone": user.phone,
-            "fcmtoken": user.fcmtoken
-          }));
+      final response = await http.post(
+        Uri.parse("$backendUrl/user"),
+        body: jsonEncode({
+          "name": user.name,
+          "phone": user.phone,
+          "fcmtoken": user.fcmtoken,
+        }),
+      );
 
       final jsonResponse = jsonDecode(response.body);
+
       if (response.statusCode == 200 || response.statusCode == 205) {
-        return UserModel(
+        if (jsonResponse["id"] != null &&
+            jsonResponse["name"] != null &&
+            jsonResponse["phone"] != null) {
+          final userModel = UserModel(
             id: jsonResponse["id"],
             name: jsonResponse["name"],
             phone: jsonResponse["phone"],
-            fcmtoken: jsonResponse["fcmtoken"]);
+            fcmtoken: jsonResponse["fcmtoken"],
+          );
+          return ResponseData(response.statusCode, userModel);
+        } else {
+          print("Invalid response data");
+          return null;
+        }
       } else {
+        print("Error in addUser: Status Code ${response.statusCode}");
         return null;
       }
     } catch (e) {
@@ -123,11 +136,7 @@ class ApiService {
   Future<RoomModel?> addRoom(RoomModel room) async {
     try {
       final response = await http.post(Uri.parse("$backendUrl/room/oandbtech"),
-          body: jsonEncode({
-            "id": room.id,
-            "roomid": room.roomId,
-            "roomname": room.roomName
-          }));
+          body: jsonEncode({"roomid": room.roomId, "roomname": room.roomName}));
 
       final jsonResponse = jsonDecode(response.body);
       if (response.statusCode == 200 || response.statusCode == 205) {

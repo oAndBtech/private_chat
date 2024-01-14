@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:private_chat/providers/room_provider.dart';
-import 'package:private_chat/screens/chat_page.dart';
+import 'package:private_chat/models/add_user_response.dart';
+import 'package:private_chat/models/user_model.dart';
+import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/screens/login_screen.dart';
+import 'package:private_chat/services/api_services.dart';
+import 'package:private_chat/services/shared_services.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen(
@@ -18,8 +21,8 @@ class SignUpScreen extends ConsumerStatefulWidget {
 }
 
 class _SignUpScreenState extends ConsumerState<SignUpScreen> {
-  TextEditingController name_controller = TextEditingController();
-  TextEditingController phone_controller = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
-                  controller: name_controller,
+                  controller: nameController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Please Enter a valid name!";
@@ -85,7 +88,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   height: 10,
                 ),
                 TextFormField(
-                  controller: phone_controller,
+                  controller: phoneController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Please Enter a valid phone number!";
@@ -142,14 +145,52 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   style: ButtonStyle(
                       backgroundColor: MaterialStateColor.resolveWith(
                           (states) => Color.fromARGB(255, 50, 153, 101))),
-                  onPressed: () {
-                    if (name_controller.text.trim().isNotEmpty &&
-                        phone_controller.text.trim().isNotEmpty) {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
-                    } else {}
+                  onPressed: () async {
+                    if (nameController.text.trim().isNotEmpty &&
+                        phoneController.text.trim().isNotEmpty) {
+                      UserModel user = UserModel(
+                          name: nameController.text.trim(),
+                          phone: phoneController.text.trim());
+                      ResponseData? response = await ApiService().addUser(user);
+
+                      if (response == null) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                                  content: Center(
+                            child: Text("Something went worng!"),
+                          )));
+                        }
+                      } else {
+                        ref
+                            .watch(userProvider.notifier)
+                            .addUser(response.userModel);
+                        SharedService().storeUserId(response.userModel.id);
+                        if (response.statusCode == 205) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                    content: Center(
+                              child: Text(
+                                  "You are already registered, please join with ROOM ID"),
+                            )));
+                          }
+                        } else {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                    content: Center(
+                              child: Text("Successfully Registered!"),
+                            )));
+
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginScreen()));
+                          }
+                        }
+                      }
+                    }
                   },
                   child: Text(
                     'Continue',
