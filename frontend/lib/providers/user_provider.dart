@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:private_chat/models/user_model.dart';
 
+final userIdProvider = StateProvider<int>((ref) => -1);
 final userProvider =
     StateNotifierProvider<UserNotifier, UserModel?>((ref) => UserNotifier());
 

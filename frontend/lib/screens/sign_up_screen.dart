@@ -24,6 +24,23 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
+  bool finalPhoneNumberRegex(String phone) {
+    RegExp phoneNumberRegExp = RegExp(r'^(\+91[\s]?)?[6789]\d{9}$');
+    if (phoneNumberRegExp.hasMatch(phone)) {
+      return true;
+    }
+    return false;
+  }
+
+  bool firstDigitRegex(String input) {
+    RegExp regex = RegExp(r'^(\+91[\s]?)?[6789]');
+
+    if (regex.hasMatch(input)) {
+      return true;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -93,8 +110,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     if (value == null || value.isEmpty) {
                       return "Please Enter a valid phone number!";
                     }
+                    if (!firstDigitRegex(value)) {
+                      return "Please Enter a valid phone number!";
+                    }
+                    if ((value.contains("+91") && value.length > 13) ||
+                        (!value.contains("+91") && value.length > 10) ||
+                        (value.contains("+91 ") && value.length > 14)) {
+                      return "Please Enter a valid phone number!";
+                    }
                     return null;
                   },
+                  keyboardType: TextInputType.phone,
+                  keyboardAppearance: Brightness.dark,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   style: GoogleFonts.montserrat(
                       fontSize: 16,
@@ -165,7 +192,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         ref
                             .watch(userProvider.notifier)
                             .addUser(response.userModel);
-                        SharedService().storeUserId(response.userModel.id);
+                        ref.read(userIdProvider.notifier).state =
+                            response.userModel.id ?? -1;
+                        await SharedService()
+                            .storeUserId(response.userModel.id);
                         if (response.statusCode == 205) {
                           if (mounted) {
                             ScaffoldMessenger.of(context)
@@ -174,6 +204,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               child: Text(
                                   "You are already registered, please join with ROOM ID"),
                             )));
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginScreen()));
                           }
                         } else {
                           if (mounted) {

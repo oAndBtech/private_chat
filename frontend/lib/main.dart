@@ -10,7 +10,6 @@ import 'package:private_chat/screens/login_screen.dart';
 import 'package:private_chat/screens/sign_up_screen.dart';
 import 'package:private_chat/services/api_services.dart';
 import 'package:private_chat/services/shared_services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -59,6 +58,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       setState(() {
         isLoggedin = true;
       });
+      ref.read(userIdProvider.notifier).state = id;
       ref.read(userProvider.notifier).addUser(user);
     }
   }
@@ -68,9 +68,8 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     setupFirebaseListeners();
+    checkLoginStatus();
   }
-
-  
 
   setupFirebaseListeners() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {

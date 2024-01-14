@@ -16,8 +16,10 @@ import 'package:private_chat/models/room_model.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
 import 'package:private_chat/providers/room_provider.dart';
+import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/providers/users_in_room_provider.dart';
 import 'package:private_chat/services/api_services.dart';
+import 'package:private_chat/services/shared_services.dart';
 import 'package:private_chat/services/socket_services.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -66,7 +68,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   sendTokenToServer(String token) async {
-    int userId = 2;
+    int userId = ref.watch(userIdProvider);
+    if (userId == -1) {
+      return;
+    }
     ApiService().updateFcmToken(token, userId);
   }
 
@@ -85,16 +90,19 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     setupFirebase();
   }
 
-  buildSocketConnection() {
+  buildSocketConnection() async {
     if (socket == null) {
+      int userId = ref.watch(userIdProvider);
       String roomId = ref.watch(roomIdProvider) ?? '-1';
-      WebSocket ws = SocketService().buildSocketConnection(roomId, 1);
+      if (userId == -1 || roomId == '-1') {
+        return;
+      }
+      WebSocket ws = SocketService().buildSocketConnection(roomId, userId);
       setState(() {
         socket = ws;
         status++;
       });
     }
-
     chechStatus();
     handleMessages();
   }
