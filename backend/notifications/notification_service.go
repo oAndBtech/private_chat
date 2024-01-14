@@ -6,7 +6,7 @@ import (
 	"github.com/oAndBtech/private_chat/backend/database"
 )
 
-func NewMessageArriveNotification(roomId string, senderName string, senderId int) {
+func NewMessageArriveNotification(roomId string, senderName string, senderId int, isText bool) {
 	var body string
 	var title string
 
@@ -17,8 +17,12 @@ func NewMessageArriveNotification(roomId string, senderName string, senderId int
 		return
 	}
 
-	body = fmt.Sprintf("%s sent a message", senderName)
-	// title = fmt.Sprintf("New message in %s", room.RoomName)
+	if isText {
+		body = fmt.Sprintf("%s sent a message", senderName)
+	} else {
+		body = fmt.Sprintf("%s sent a image", senderName)
+	}
+
 	if room.RoomName == nil || room.RoomName == "" {
 		title = "New Message!"
 	} else {
@@ -37,5 +41,4 @@ func NewMessageArriveNotification(roomId string, senderName string, senderId int
 		return
 	}
 	SendPushNotification(fcmTokens, title, body)
-
 }

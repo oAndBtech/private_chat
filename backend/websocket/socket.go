@@ -117,7 +117,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content), jsonMsg.IsText, senderName)
 		broadcast(roomID, conn, broadcastJSON)
-		notifications.NewMessageArriveNotification(roomID, senderName, userIdInteger)
+		notifications.NewMessageArriveNotification(roomID, senderName, userIdInteger,jsonMsg.IsText)
 	}
 }
 

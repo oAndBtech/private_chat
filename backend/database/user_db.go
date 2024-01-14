@@ -11,7 +11,7 @@ import (
 func User(id int) (model.UserModel, error) {
 	query := "SELECT * FROM users WHERE id = $1"
 	var user model.UserModel
-	err := db.QueryRow(query, id).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken, &user.WebFcmToken)
+	err := db.QueryRow(query, id).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken, &user.WebFcmToken, &user.Notif)
 	if err != nil {
 		return model.UserModel{}, fmt.Errorf("error retrieving user: %v", err)
 	}
@@ -43,6 +43,7 @@ func UpdateUser(id int, user model.UserModel) bool {
 		"phone":       user.Phone,
 		"fcmtoken":    user.FcmToken,
 		"webfcmtoken": user.WebFcmToken,
+		"notif":       user.Notif,
 	}
 
 	var setStatements []string
@@ -157,10 +158,10 @@ func GetAllFCMTokensInARoom(roomId string, senderId int) ([]string, error) {
 
 	var tokens []string
 	for _, user := range users {
-		if senderId != user.ID && user.FcmToken != nil && user.FcmToken != "" {
+		if senderId != user.ID && user.FcmToken != nil && user.FcmToken != "" && user.Notif {
 			tokens = append(tokens, user.FcmToken.(string))
 		}
-		if senderId != user.ID && user.WebFcmToken != nil && user.WebFcmToken != "" {
+		if senderId != user.ID && user.WebFcmToken != nil && user.WebFcmToken != "" && user.Notif {
 			tokens = append(tokens, user.WebFcmToken.(string))
 		}
 	}

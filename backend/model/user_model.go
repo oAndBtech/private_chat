@@ -6,4 +6,5 @@ type UserModel struct {
 	Phone       string `json:"phone"`
 	FcmToken    any    `json:"fcmtoken"`
 	WebFcmToken any    `json:"webfcmtoken"`
+	Notif       bool   `json:"notif"`
 }

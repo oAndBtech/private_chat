@@ -125,7 +125,7 @@ func UsersInRoom(roomId string) ([]model.UserModel, error) {
 		query := "SELECT * FROM users WHERE id = $1"
 
 		var user model.UserModel
-		db.QueryRow(query, userId).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken, &user.WebFcmToken)
+		db.QueryRow(query, userId).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken, &user.WebFcmToken, &user.Notif)
 		users = append(users, user)
 	}
 
