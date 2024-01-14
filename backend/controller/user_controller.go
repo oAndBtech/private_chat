@@ -67,7 +67,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 
 	if userAlreadyInDb {
 		fmt.Println("USERS PHONE NUMBER IS ALREADY IN DB")
-		w.WriteHeader(http.StatusResetContent) // it will return 205
+		w.WriteHeader(http.StatusConflict) // it will return 205
 		json.NewEncoder(w).Encode(existedUser)
 		return
 	}
