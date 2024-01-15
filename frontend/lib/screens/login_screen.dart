@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:private_chat/components/custom_route.dart';
 import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/screens/chat_page.dart';
 
@@ -95,7 +96,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ref.read(roomIdProvider.notifier).state =
                           controller.text.trim();
                       Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => const ChatPage()));
+                          CustomPageRoute(child: const ChatPage()));
                     } else {}
                   },
                   child: Text(

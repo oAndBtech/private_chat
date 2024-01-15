@@ -18,6 +18,7 @@ import 'package:private_chat/providers/message_provider.dart';
 import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/providers/users_in_room_provider.dart';
+import 'package:private_chat/screens/profile.dart';
 import 'package:private_chat/services/api_services.dart';
 import 'package:private_chat/services/socket_services.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -111,9 +112,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       WebSocket ws = SocketService().buildSocketConnection(roomId, userId);
       setState(() {
         socket = ws;
-        status++;
       });
     }
+    setState(() {
+      status++;
+    });
     chechStatus();
     fetchAllUsers();
     handleMessages();
@@ -147,10 +150,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           await ApiService().messagesInRoom(roomId) ?? [];
 
       ref.read(messageProvider.notifier).addAllMessages(messages);
-      setState(() {
-        status++;
-      });
     }
+    setState(() {
+      status++;
+    });
 
     chechStatus();
   }
@@ -160,10 +163,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       String roomId = ref.watch(roomIdProvider) ?? '-1';
       List<UserModel> usrs = await ApiService().allUsersInRoom(roomId) ?? [];
       ref.read(usersInRoomProvider.notifier).addAllUsers(usrs);
-      setState(() {
-        status++;
-      });
     }
+    setState(() {
+      status++;
+    });
     chechStatus();
   }
 
@@ -173,11 +176,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       RoomModel? room = await ApiService().getRoom(roomId);
       if (room != null) {
         ref.read(roomProvider.notifier).addRoom(room);
-        setState(() {
-          status++;
-        });
       }
     }
+    setState(() {
+      status++;
+    });
     chechStatus();
   }
 
@@ -247,10 +250,13 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   systemOverlayStyle: const SystemUiOverlayStyle(
                       statusBarColor: Color(0xff111216)),
                 ),
+                endDrawer: const ProfileDialog(),
                 body: SafeArea(
                   child: Column(
                     children: [
-                      const CustomAppBar(),
+                      CustomAppBar(
+                        socket: socket,
+                      ),
                       Expanded(child: MessageList(messages: messages)),
                       BottomComponent(socket: socket)
                     ],

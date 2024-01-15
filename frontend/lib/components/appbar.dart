@@ -4,16 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:private_chat/components/custom_route.dart';
 import 'package:private_chat/components/members_element.dart';
 import 'package:private_chat/models/room_model.dart';
 import 'package:private_chat/models/user_model.dart';
+import 'package:private_chat/providers/message_provider.dart';
 import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/providers/users_in_room_provider.dart';
+import 'package:private_chat/screens/login_screen.dart';
 import 'package:private_chat/services/api_services.dart';
+import 'package:private_chat/services/socket_services.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 class CustomAppBar extends ConsumerStatefulWidget {
-  const CustomAppBar({super.key});
+  const CustomAppBar({super.key, this.socket});
+  final WebSocket? socket;
 
   @override
   ConsumerState<CustomAppBar> createState() => _CustomAppBarState();
@@ -231,30 +237,88 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
     ).then((value) {
       switch (value) {
         case "logout":
-          //TODO:handle logout
+          logout();
           break;
         case "profile":
-          //TODO:open profile
+          Scaffold.of(context).openEndDrawer();
           break;
         case "notif":
-          changeNotificationStatus(value, (fn) {});
+          bool v = ref.watch(notificationProvider);
+          changeNotificationStatus(!v, null);
           break;
         default:
       }
     });
   }
 
-  Future<void> changeNotificationStatus(bool v, StateSetter setState) async {
-    setState(() {
+  Future<void> changeNotificationStatus(bool v, StateSetter? setState) async {
+    if (setState != null) {
+      setState(() {
+        ref.watch(notificationProvider.notifier).state = v;
+      });
+    } else {
       ref.watch(notificationProvider.notifier).state = v;
-    });
+    }
 
     bool res = await ApiService()
         .updateNotificationStatus(ref.watch(userIdProvider), v);
     if (!res) {
-      setState(() {
+      if (setState != null) {
+        setState(() {
+          ref.watch(notificationProvider.notifier).state = !v;
+        });
+      } else {
         ref.watch(notificationProvider.notifier).state = !v;
-      });
+      }
     }
+  }
+
+  logout() {
+    showDialog(
+        context: context,
+        builder: ((context) => AlertDialog(
+              backgroundColor: const Color(0xff111216),
+              title: Text(
+                'Are you sure you want to logout?',
+                style: GoogleFonts.montserrat(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: const Color(0xffFFFFFF)),
+              ),
+              actions: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Cancel',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xff000000)))),
+                ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateColor.resolveWith(
+                            (states) =>
+                                const Color.fromARGB(255, 50, 153, 101))),
+                    onPressed: () {
+                      if (widget.socket != null) {
+                        SocketService().closeConnection(widget.socket!);
+                      }
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          CustomPageRoute(child: const LoginScreen()),
+                          (route) => false);
+                      ref.read(roomIdProvider.notifier).state = null;
+                      ref.read(roomProvider.notifier).clearState();
+                      ref.read(usersInRoomProvider.notifier).deleteAllUsers();
+                      ref.read(messageProvider.notifier).deleteAllMessages();
+                    },
+                    child: Text('Logout',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xff000000))))
+              ],
+            )));
   }
 }

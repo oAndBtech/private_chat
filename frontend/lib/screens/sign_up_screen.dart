@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:private_chat/components/custom_route.dart';
 import 'package:private_chat/models/add_user_response.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/user_provider.dart';
@@ -95,8 +96,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       )),
                       border: OutlineInputBorder(
                           borderSide: BorderSide(
-                        color:
-                            const Color.fromARGB(255, 212, 212, 212).withOpacity(0.7),
+                        color: const Color.fromARGB(255, 212, 212, 212)
+                            .withOpacity(0.7),
                       ))),
                 ),
                 const SizedBox(
@@ -145,8 +146,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       )),
                       border: OutlineInputBorder(
                           borderSide: BorderSide(
-                        color:
-                            const Color.fromARGB(255, 212, 212, 212).withOpacity(0.7),
+                        color: const Color.fromARGB(255, 212, 212, 212)
+                            .withOpacity(0.7),
                       ))),
                 ),
               ],
@@ -187,9 +188,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           )));
                         }
                       } else {
-                        ref
-                            .watch(userProvider.notifier)
-                            .addUser(response.userModel);
+                        ref.watch(userProvider.notifier).state =
+                            (response.userModel);
                         ref.read(userIdProvider.notifier).state =
                             response.userModel.id ?? -1;
                         await SharedService()
@@ -202,10 +202,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               child: Text(
                                   "You are already registered, please join with ROOM ID"),
                             )));
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginScreen()));
+                            Navigator.pushReplacement(context,
+                                CustomPageRoute(child: const LoginScreen()));
                           }
                         } else {
                           if (mounted) {
@@ -215,10 +213,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               child: Text("Successfully Registered!"),
                             )));
 
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginScreen()));
+                            Navigator.pushReplacement(context,
+                                CustomPageRoute(child: const LoginScreen()));
                           }
                         }
                       }

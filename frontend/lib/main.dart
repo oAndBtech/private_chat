@@ -53,7 +53,15 @@ class _MyAppState extends ConsumerState<MyApp> {
     }
   }
 
-  addUserToTheProviders(int id) async {
+  addUserToTheProviders(int? id) async {
+    if (id == null) {
+      setState(() {
+        status++;
+        checkStatus();
+      });
+      return;
+    }
+
     UserModel? user = await ApiService().getUser(id);
     if (user == null) {
       setState(() {
@@ -65,7 +73,12 @@ class _MyAppState extends ConsumerState<MyApp> {
       });
       ref.read(notificationProvider.notifier).state = user.notif ?? true;
       ref.read(userIdProvider.notifier).state = id;
-      ref.read(userProvider.notifier).addUser(user);
+      ref.read(userProvider.notifier).state = user;
+
+      setState(() {
+        status++;
+        checkStatus();
+      });
     }
   }
 
@@ -91,13 +104,13 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   checkLoginStatus() async {
     int? id = await SharedService().getUserId();
-    if (id != null) {
-      await addUserToTheProviders(id);
-    }
-    setState(() {
-      status++;
-      checkStatus();
-    });
+    // if (id != null) {
+    await addUserToTheProviders(id);
+    // }else{
+    //   setState(() {
+    //     isLoggedin = false;
+    //   });
+    // }
   }
 
   @override

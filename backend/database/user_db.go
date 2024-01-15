@@ -51,7 +51,7 @@ func UpdateUser(id int, user model.UserModel) bool {
 	var index = 1
 
 	for k, v := range fields {
-		if v != nil && v != "" && v.(bool) {
+		if v != nil && v != "" {
 			setStatements = append(setStatements, fmt.Sprintf("%s = $%d", k, index))
 			values = append(values, v)
 			index++

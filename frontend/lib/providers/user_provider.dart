@@ -4,7 +4,7 @@ import 'package:private_chat/models/user_model.dart';
 final userIdProvider = StateProvider<int>((ref) => -1);
 final notificationProvider = StateProvider<bool>((ref) => true);
 final userProvider =
-    StateNotifierProvider<UserNotifier, UserModel?>((ref) => UserNotifier());
+    StateProvider<UserModel?>((ref) => null);
 
 class UserNotifier extends StateNotifier<UserModel?> {
   UserNotifier() : super(null);

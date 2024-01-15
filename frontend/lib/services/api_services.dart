@@ -34,6 +34,7 @@ class ApiService {
             id: jsonResponse["id"],
             name: jsonResponse["name"],
             phone: jsonResponse["phone"],
+            notif: jsonResponse["notif"],
             fcmtoken: jsonResponse["fcmtoken"]);
       }
       print(response.body);
@@ -88,7 +89,6 @@ class ApiService {
       final response = await http.post(Uri.parse("$backendUrl/user/$id"),
           body: jsonEncode({
             "name": user.name,
-            "phone": user.phone,
             "fcmtoken": user.fcmtoken
           }));
 
@@ -235,7 +235,7 @@ class ApiService {
 
   updateNotificationStatus(int id, bool value) async {
     try {
-      final response = await http.post(Uri.parse("$backendUrl/room/$id/notif"),
+      final response = await http.post(Uri.parse("$backendUrl/user/$id/notif"),
           body: jsonEncode({"notif": value}));
 
       if (response.statusCode == 200) {

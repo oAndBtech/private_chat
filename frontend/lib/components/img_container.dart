@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:private_chat/components/custom_route.dart';
 import 'package:private_chat/screens/image_viewer.dart';
 
 class ImageContainer extends StatelessWidget {
@@ -16,8 +17,7 @@ class ImageContainer extends StatelessWidget {
       onTap: () {
         Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (ctx) => ImageViewer(
+            CustomPageRoute(child: ImageViewer(
                       isUrl: isUrl,
                       bytes: bytes,
                       url: url,
