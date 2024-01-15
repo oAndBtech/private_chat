@@ -140,7 +140,7 @@ class ApiService {
           body: jsonEncode({"roomid": room.roomId, "roomname": room.roomName}));
 
       final jsonResponse = jsonDecode(response.body);
-      if (response.statusCode == 200 || response.statusCode == 205) {
+      if (response.statusCode == 200 || response.statusCode == 409) {
         return RoomModel(
             roomId: jsonResponse["roomid"],
             roomName: jsonResponse["roomname"],
@@ -230,6 +230,22 @@ class ApiService {
     } catch (e) {
       print("Error in messagesInRoom: $e");
       return null;
+    }
+  }
+
+  updateNotificationStatus(int id, bool value) async {
+    try {
+      final response = await http.post(Uri.parse("$backendUrl/room/$id/notif"),
+          body: jsonEncode({"notif": value}));
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("ERROR in updateNotificationStatus : $e");
+      return false;
     }
   }
 }

@@ -7,7 +7,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/user_provider.dart';
-import 'package:private_chat/screens/chat_page.dart';
 import 'package:private_chat/screens/login_screen.dart';
 import 'package:private_chat/screens/sign_up_screen.dart';
 import 'package:private_chat/services/api_services.dart';
@@ -64,6 +63,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       setState(() {
         isLoggedin = true;
       });
+      ref.read(notificationProvider.notifier).state = user.notif ?? true;
       ref.read(userIdProvider.notifier).state = id;
       ref.read(userProvider.notifier).addUser(user);
     }

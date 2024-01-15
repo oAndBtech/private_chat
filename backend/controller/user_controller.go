@@ -152,3 +152,41 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode("Successfully user deleted")
 }
+
+func UpdateNotificationStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Content-Type", "application/json")
+
+	params := mux.Vars(r)
+	idStr, ok := params["id"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode("Please provide a valid ID")
+		return
+	}
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode("Invalid ID")
+		return
+	}
+
+	var user model.UserModel
+	err2 := json.NewDecoder(r.Body).Decode(&user)
+	if err2 != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode("Invalid JSON format")
+		return
+	}
+	result := database.UpdateNotificationStatus(id, user.Notif)
+	if !result {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode("Failed to update notif status")
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode("Successfully notif status updated")
+}

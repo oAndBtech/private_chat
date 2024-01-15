@@ -44,7 +44,6 @@ func UpdateUser(id int, user model.UserModel) bool {
 		"phone":       user.Phone,
 		"fcmtoken":    user.FcmToken,
 		"webfcmtoken": user.WebFcmToken,
-		"notif":       user.Notif,
 	}
 
 	var setStatements []string
@@ -52,7 +51,7 @@ func UpdateUser(id int, user model.UserModel) bool {
 	var index = 1
 
 	for k, v := range fields {
-		if v != nil && v != "" {
+		if v != nil && v != "" && v.(bool) {
 			setStatements = append(setStatements, fmt.Sprintf("%s = $%d", k, index))
 			values = append(values, v)
 			index++
@@ -73,6 +72,27 @@ func UpdateUser(id int, user model.UserModel) bool {
 		return false
 	}
 
+	affectedRows, err := res.RowsAffected()
+	if err != nil {
+		log.Printf("Error getting affected rows: %v\n", err)
+		return false
+	}
+
+	if affectedRows == 0 {
+		log.Printf("No rows updated for ID: %d\n", id)
+	} else {
+		log.Printf("Updated %d rows for ID: %d\n", affectedRows, id)
+	}
+	return true
+}
+
+func UpdateNotificationStatus(id int, value bool) bool {
+	query := "UPDATE users SET notif = $1 WHERE id = $2"
+	res, err := db.Exec(query, value, id)
+	if err != nil {
+		log.Printf("Error while updating notifcation status, user id=%d, err: %v\n", id, err)
+		return false
+	}
 	affectedRows, err := res.RowsAffected()
 	if err != nil {
 		log.Printf("Error getting affected rows: %v\n", err)

@@ -10,6 +10,7 @@ import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/providers/users_in_room_provider.dart';
+import 'package:private_chat/services/api_services.dart';
 
 class CustomAppBar extends ConsumerStatefulWidget {
   const CustomAppBar({super.key});
@@ -53,8 +54,6 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
             MemberElement(name: usrs[index].name, number: usrs[index].phone));
     return list;
   }
-
-  bool isNotif = true;
 
   @override
   Widget build(BuildContext context) {
@@ -216,11 +215,8 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
               return ListTile(
                 trailing: Switch(
                   value: ref.watch(notificationProvider),
-                  onChanged: (v) {
-                    setState(() {
-                      ref.watch(notificationProvider.notifier).state = v;
-                    });
-                    // TODO: Call API to change in the database
+                  onChanged: (v) async {
+                    await changeNotificationStatus(v, setState);
                   },
                 ),
                 title: const Text(
@@ -241,11 +237,24 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
           //TODO:open profile
           break;
         case "notif":
-          ref.watch(notificationProvider.notifier).state =
-              !ref.read(notificationProvider);
+          changeNotificationStatus(value, (fn) {});
           break;
         default:
       }
     });
+  }
+
+  Future<void> changeNotificationStatus(bool v, StateSetter setState) async {
+    setState(() {
+      ref.watch(notificationProvider.notifier).state = v;
+    });
+
+    bool res = await ApiService()
+        .updateNotificationStatus(ref.watch(userIdProvider), v);
+    if (!res) {
+      setState(() {
+        ref.watch(notificationProvider.notifier).state = !v;
+      });
+    }
   }
 }

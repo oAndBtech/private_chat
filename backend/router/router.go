@@ -17,10 +17,11 @@ func Router() *mux.Router {
 	//Message Controllers
 
 	//User Controllers
-	r.HandleFunc("/user/{id}", controller.GetUser).Methods("GET")       //get user
-	r.HandleFunc("/user", controller.AddUser).Methods("POST")           //Add user
-	r.HandleFunc("/user/{id}", controller.UpdateUser).Methods("POST")   //update user
-	r.HandleFunc("/user/{id}", controller.DeleteUser).Methods("DELETE") //delete user
+	r.HandleFunc("/user/{id}", controller.GetUser).Methods("GET")                         //get user
+	r.HandleFunc("/user", controller.AddUser).Methods("POST")                             //Add user
+	r.HandleFunc("/user/{id}", controller.UpdateUser).Methods("POST")                     //update user
+	r.HandleFunc("/user/{id}/notif", controller.UpdateNotificationStatus).Methods("POST") //update user
+	r.HandleFunc("/user/{id}", controller.DeleteUser).Methods("DELETE")                   //delete user
 
 	//Room Controllers
 	r.HandleFunc("/room/{id}", controller.GetRoom).Methods("GET")                 //get room
