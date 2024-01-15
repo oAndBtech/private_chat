@@ -80,7 +80,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     buildSocketConnection();
     fetchRoom();
     fetchAllMessages();
-    fetchAllUsers();
+    // fetchAllUsers();
   }
 
   @override
@@ -115,6 +115,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       });
     }
     chechStatus();
+    fetchAllUsers();
     handleMessages();
   }
 

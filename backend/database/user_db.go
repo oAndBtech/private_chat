@@ -19,10 +19,10 @@ func User(id int) (model.UserModel, error) {
 }
 
 func AddUser(user model.UserModel) (model.UserModel, error) {
-	query := "INSERT INTO users (name, phone, fcmtoken, webfcmtoken, notif) VALUES ($1, $2, $3, $4, $5) RETURNING *"
+	query := "INSERT INTO users (name, phone, fcmtoken, webfcmtoken) VALUES ($1, $2, $3, $4) RETURNING *"
 
 	var newUser model.UserModel
-	err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken, user.WebFcmToken, user.Notif).Scan(
+	err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken, user.WebFcmToken).Scan(
 		&newUser.ID,
 		&newUser.Name,
 		&newUser.Phone,
