@@ -19,7 +19,7 @@ func User(id int) (model.UserModel, error) {
 }
 
 func AddUser(user model.UserModel) (model.UserModel, error) {
-	query := "INSERT INTO users (name, phone, fcmtoken, webfcmtoken) VALUES ($1, $2, $3, $4, $5) RETURNING *"
+	query := "INSERT INTO users (name, phone, fcmtoken, webfcmtoken, notif) VALUES ($1, $2, $3, $4, $5) RETURNING *"
 
 	var newUser model.UserModel
 	err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken, user.WebFcmToken, user.Notif).Scan(
@@ -141,9 +141,9 @@ func CheckUserExistsDB(phone string) (bool, model.UserModel) {
 	}
 	if exists {
 		query = "SELECT * FROM users WHERE phone = $1"
-		err := db.QueryRow(query, phone).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken, &user.WebFcmToken)
+		err := db.QueryRow(query, phone).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken, &user.WebFcmToken, &user.Notif)
 		if err != nil {
-			log.Printf("error %v", err)
+			log.Printf("error checking users phone: %v", err)
 			return false, user
 		}
 		return true, user
