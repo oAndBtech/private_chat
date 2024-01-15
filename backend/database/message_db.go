@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"log"
 
 	_ "github.com/lib/pq"
 	"github.com/oAndBtech/private_chat/backend/model"
@@ -11,7 +12,7 @@ func AddMessage(userId int, roomId string, msg []byte, isText bool, senderName s
 	query := "INSERT INTO messages (content, sender, receiver, istext, sendername) VALUES ($1, $2, $3, $4, $5)"
 	_, err := db.Exec(query, msg, userId, roomId, isText, senderName) //TODO: take isText variable from frontend and then change it
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return false
 	}
 	return true
@@ -33,8 +34,6 @@ func AllMessagesInRoom(roomId string) ([]model.MessageModel, error) {
 			return nil, fmt.Errorf("error scanning message row: %v", err)
 		}
 		messages = append(messages, message)
-
-		fmt.Println(message)
 	}
 
 	if err := rows.Err(); err != nil {
@@ -42,9 +41,3 @@ func AllMessagesInRoom(roomId string) ([]model.MessageModel, error) {
 	}
 	return messages, nil
 }
-
-//TODO:ADD THIS FEATURE
-
-// func DeleteMessage()  {
-// 	//
-// }

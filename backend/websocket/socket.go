@@ -2,7 +2,7 @@ package websocket
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"sync"
@@ -38,37 +38,37 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 	userIdInteger, err := strconv.Atoi(userID) //convert to int
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
 	//check user exists in db or not
 	userExists := database.VerifyUser(userIdInteger)
 	if !userExists {
-		fmt.Println("WRONG USER ID")
+		log.Println("WRONG USER ID")
 		return
 	}
 
 	//check room id exists
 	roomExists, err := database.VerifyRoomId(roomID)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
 	if !roomExists {
-		fmt.Println("WRONG ROOMID")
+		log.Println("WRONG ROOMID")
 		return
 	}
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	defer conn.Close()
 
-	fmt.Printf("%v User connected to the room: %v\n", userID, roomID)
+	log.Printf("%v User connected to the room: %v\n", userID, roomID)
 
 	//if user not in db then add him to db by roomID
 	database.AddUserInRoom(userIdInteger, roomID)
@@ -78,24 +78,21 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	for {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			break
 		}
-		fmt.Println("MESSAGE: ", msg)
 
 		var jsonMsg Message
 		err = json.Unmarshal(msg, &jsonMsg)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			break
 		}
-
-		fmt.Println(jsonMsg)
 
 		currentTime := time.Now()
 		senderName, err := database.UsersName(userIdInteger)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return
 		}
 
@@ -109,15 +106,13 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 		broadcastJSON, err := json.Marshal(broadcastMsg)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			break
 		}
 
-		fmt.Println([]byte(jsonMsg.Content))
-
 		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content), jsonMsg.IsText, senderName)
 		broadcast(roomID, conn, broadcastJSON)
-		notifications.NewMessageArriveNotification(roomID, senderName, userIdInteger,jsonMsg.IsText)
+		notifications.NewMessageArriveNotification(roomID, senderName, userIdInteger, jsonMsg.IsText)
 	}
 }
 
@@ -142,7 +137,7 @@ func broadcast(roomID string, sender *websocket.Conn, message []byte) {
 		if conn != sender {
 			err := conn.WriteMessage(websocket.TextMessage, message)
 			if err != nil {
-				fmt.Println(err)
+				log.Println(err)
 				conn.Close()
 				delete(clients[roomID], conn)
 			}
@@ -153,6 +148,6 @@ func broadcast(roomID string, sender *websocket.Conn, message []byte) {
 func storeMessage(senderId int, roomId string, msg []byte, isText bool, senderName string) {
 	res := database.AddMessage(senderId, roomId, msg, isText, senderName)
 	if !res {
-		fmt.Println("failed to add msg in db")
+		log.Println("failed to add msg in db")
 	}
 }

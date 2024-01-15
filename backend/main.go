@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 
@@ -22,15 +22,20 @@ var app *firebase.App
 func main() {
 	env.LoadEnv()
 
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	}))
+	slog.SetDefault(logger)
+
 	connStr := os.Getenv("DB_CONNSTRING")
 	var err error
 	db, err = sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err.Error())
 	}
 
 	if err = db.Ping(); err != nil {
-		log.Fatal(err)
+		log.Println(err.Error())
 	}
 
 	database.InitDB(db)
@@ -39,21 +44,14 @@ func main() {
 	opt := option.WithCredentialsFile("credentials.json")
 	app, err = firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err.Error())
 	}
 	notifications.InitFirebase(app)
 	
 	r := router.Router()
 	err = http.ListenAndServe(":3000", r)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err.Error())
 	}
-
-	// res, err := database.CheckUserIsInRoom(1, "45")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// } else {
-	// 	fmt.Println(res)
-	// }
 
 }

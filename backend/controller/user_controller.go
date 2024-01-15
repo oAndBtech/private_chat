@@ -2,7 +2,7 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -19,7 +19,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	userId, ok := params["id"]
 	if !ok {
-		fmt.Println("Please provide a valid id")
+		log.Println("Please provide a valid id")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("Please provide a valid id")
 		return
@@ -28,7 +28,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	integerId, err := strconv.Atoi(userId)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
@@ -37,7 +37,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	user, err := database.User(integerId)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("failed to get details of user")
 		return
@@ -66,7 +66,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	userAlreadyInDb, existedUser := database.CheckUserExistsDB(user.Phone)
 
 	if userAlreadyInDb {
-		fmt.Println("USERS PHONE NUMBER IS ALREADY IN DB")
+		log.Println("USERS PHONE NUMBER IS ALREADY IN DB")
 		w.WriteHeader(http.StatusConflict) // it will return 205
 		json.NewEncoder(w).Encode(existedUser)
 		return

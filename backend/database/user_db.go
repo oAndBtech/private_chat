@@ -19,18 +19,19 @@ func User(id int) (model.UserModel, error) {
 }
 
 func AddUser(user model.UserModel) (model.UserModel, error) {
-	query := "INSERT INTO users (name, phone, fcmtoken, webfcmtoken) VALUES ($1, $2, $3, $4) RETURNING *"
+	query := "INSERT INTO users (name, phone, fcmtoken, webfcmtoken) VALUES ($1, $2, $3, $4, $5) RETURNING *"
 
 	var newUser model.UserModel
-	err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken, user.WebFcmToken).Scan(
+	err := db.QueryRow(query, user.Name, user.Phone, user.FcmToken, user.WebFcmToken, user.Notif).Scan(
 		&newUser.ID,
 		&newUser.Name,
 		&newUser.Phone,
 		&newUser.FcmToken,
 		&newUser.WebFcmToken,
+		&newUser.Notif,
 	)
 	if err != nil {
-		fmt.Println("Error adding user:", err)
+		log.Println("Error adding user:", err)
 		return model.UserModel{}, fmt.Errorf("ERROR: %s", err)
 	}
 
@@ -59,7 +60,7 @@ func UpdateUser(id int, user model.UserModel) bool {
 	}
 
 	if index == 1 {
-		fmt.Println("No given data for updating user")
+		log.Println("No given data for updating user")
 		return false
 	}
 
@@ -68,20 +69,20 @@ func UpdateUser(id int, user model.UserModel) bool {
 
 	res, err := db.Exec(query, values...)
 	if err != nil {
-		fmt.Printf("Error while updating user id=%d, err: %v\n", id, err)
+		log.Printf("Error while updating user id=%d, err: %v\n", id, err)
 		return false
 	}
 
 	affectedRows, err := res.RowsAffected()
 	if err != nil {
-		fmt.Printf("Error getting affected rows: %v\n", err)
+		log.Printf("Error getting affected rows: %v\n", err)
 		return false
 	}
 
 	if affectedRows == 0 {
-		fmt.Printf("No rows updated for ID: %d\n", id)
+		log.Printf("No rows updated for ID: %d\n", id)
 	} else {
-		fmt.Printf("Updated %d rows for ID: %d\n", affectedRows, id)
+		log.Printf("Updated %d rows for ID: %d\n", affectedRows, id)
 	}
 	return true
 }
@@ -92,13 +93,13 @@ func DeleteUser(id int) bool {
 	result, err := db.Exec(query, id)
 
 	if err != nil {
-		fmt.Printf("Error while deleting user id= %d, err: %v", id, err)
+		log.Printf("Error while deleting user id= %d, err: %v", id, err)
 		return false
 	}
 
 	deletedRow, err := result.RowsAffected()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return false
 	}
 
@@ -122,7 +123,7 @@ func VerifyUser(userId int) bool {
 
 	err := db.QueryRow(query, userId).Scan(&exists)
 	if err != nil {
-		fmt.Printf("error verifying user id = %v, error: %v", userId, err)
+		log.Printf("error verifying user id = %v, error: %v", userId, err)
 		return false
 	}
 	return exists
@@ -135,14 +136,14 @@ func CheckUserExistsDB(phone string) (bool, model.UserModel) {
 
 	err := db.QueryRow(query, phone).Scan(&exists)
 	if err != nil {
-		fmt.Printf("error checking users phone = %v, error: %v", phone, err)
+		log.Printf("error checking users phone = %v, error: %v", phone, err)
 		return false, user
 	}
 	if exists {
 		query = "SELECT * FROM users WHERE phone = $1"
 		err := db.QueryRow(query, phone).Scan(&user.ID, &user.Name, &user.Phone, &user.FcmToken, &user.WebFcmToken)
 		if err != nil {
-			fmt.Printf("error %v", err)
+			log.Printf("error %v", err)
 			return false, user
 		}
 		return true, user

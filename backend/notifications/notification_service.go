@@ -2,6 +2,7 @@ package notifications
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/oAndBtech/private_chat/backend/database"
 )
@@ -13,7 +14,7 @@ func NewMessageArriveNotification(roomId string, senderName string, senderId int
 	room, err := database.Room(roomId)
 
 	if err != nil {
-		fmt.Printf("Error while fetching room for sending notification: %s\n", err)
+		log.Printf("Error while fetching room for sending notification: %s\n", err)
 		return
 	}
 
@@ -32,12 +33,12 @@ func NewMessageArriveNotification(roomId string, senderName string, senderId int
 	fcmTokens, err := database.GetAllFCMTokensInARoom(roomId, senderId)
 
 	if err != nil {
-		fmt.Printf("ERROR while sending notification: %s", err)
+		log.Printf("ERROR while sending notification: %s", err)
 		return
 	}
 
 	if fcmTokens == nil {
-		fmt.Println("No fcm tokens present")
+		log.Println("No fcm tokens present")
 		return
 	}
 	SendPushNotification(fcmTokens, title, body)

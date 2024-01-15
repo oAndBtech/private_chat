@@ -2,7 +2,7 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -15,11 +15,11 @@ func GetRoom(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "application/json")
-	
+
 	params := mux.Vars(r)
 	roomId, ok := params["id"]
 	if !ok {
-		fmt.Println("not a valid id while fetching room")
+		log.Println("not a valid id while fetching room")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("Please provide a valid id")
 		return
@@ -28,7 +28,7 @@ func GetRoom(w http.ResponseWriter, r *http.Request) {
 	room, err := database.Room(roomId)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
@@ -73,7 +73,7 @@ func DeleteRoom(w http.ResponseWriter, r *http.Request) {
 	roomId, ok := params["id"]
 
 	if !ok {
-		fmt.Println("Inavild Room ID")
+		log.Println("Inavild Room ID")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("Invalid Room ID")
 		return
@@ -82,7 +82,7 @@ func DeleteRoom(w http.ResponseWriter, r *http.Request) {
 	err := database.DeleteRoom(roomId)
 
 	if err != nil {
-		fmt.Printf("failed to delete room id= %v", roomId)
+		log.Printf("failed to delete room id= %v, Error: %v", roomId, err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("failed to delete room")
 		return
@@ -104,7 +104,7 @@ func MessagesInRoom(w http.ResponseWriter, r *http.Request) {
 	roomId, ok := params["id"]
 
 	if !ok {
-		fmt.Println("Please provide a valid id")
+		log.Println("Please provide a valid id")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("Please provide a valid id")
 		return
@@ -113,13 +113,11 @@ func MessagesInRoom(w http.ResponseWriter, r *http.Request) {
 	messages, err := database.AllMessagesInRoom(roomId)
 
 	if err != nil {
-		fmt.Printf("error while getting all messgaes in controller,%v", err)
+		log.Printf("error while getting all messgaes in controller,%v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("Failed to get all messages in room")
 		return
 	}
-
-	fmt.Println(messages)
 
 	if messages == nil {
 		w.WriteHeader(http.StatusOK)
@@ -141,7 +139,7 @@ func AllUserInRoom(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	roomId, ok := params["id"]
 	if !ok {
-		fmt.Println("Please provide a valid id")
+		log.Println("Please provide a valid id")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("Please provide a valid id")
 		return
@@ -149,7 +147,7 @@ func AllUserInRoom(w http.ResponseWriter, r *http.Request) {
 
 	users, err := database.UsersInRoom(roomId)
 	if err != nil {
-		fmt.Println("Error while fetching all users in a room")
+		log.Printf("Error while fetching all users in a room: %v", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("failed to get all users")
 		return
@@ -187,9 +185,9 @@ func UpdateRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isRoomExists , err := database.VerifyRoomId(idStr)
+	isRoomExists, err := database.VerifyRoomId(idStr)
 
-	if err!=nil || !isRoomExists {
+	if err != nil || !isRoomExists {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{"message": "Wrong Room ID (Room does not exists)"})
 		return

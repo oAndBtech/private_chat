@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 
 	_ "github.com/lib/pq"
 )
@@ -11,10 +11,5 @@ var db *sql.DB
 
 func InitDB(datab *sql.DB) {
 	db = datab
-	fmt.Println("DB initialized")
+	log.Println("DB initialized")
 }
-
-
-
-
-

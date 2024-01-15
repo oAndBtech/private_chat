@@ -3,21 +3,22 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	"github.com/oAndBtech/private_chat/backend/model"
 )
 
 func Room(roomId string) (model.RoomModel, error) {
-    query := "SELECT * FROM rooms WHERE roomid = $1"
-    var room model.RoomModel
-    err := db.QueryRow(query, roomId).Scan(&room.ID, &room.RoomId, &room.RoomName)
-    if err != nil {
-        if err == sql.ErrNoRows {
-            return model.RoomModel{}, fmt.Errorf("no room found with ID %s", roomId)
-        }
-        return model.RoomModel{}, fmt.Errorf("error retrieving room: %v", err)
-    }
-    return room, nil
+	query := "SELECT * FROM rooms WHERE roomid = $1"
+	var room model.RoomModel
+	err := db.QueryRow(query, roomId).Scan(&room.ID, &room.RoomId, &room.RoomName)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return model.RoomModel{}, fmt.Errorf("no room found with ID %s", roomId)
+		}
+		return model.RoomModel{}, fmt.Errorf("error retrieving room: %v", err)
+	}
+	return room, nil
 }
 
 func AddRoom(roomId string) bool {
@@ -25,7 +26,7 @@ func AddRoom(roomId string) bool {
 
 	_, err := db.Exec(query, roomId)
 	if err != nil {
-		fmt.Printf("Error while adding room,%v", err)
+		log.Printf("Error while adding room,%v", err)
 		return false
 	}
 	return true
@@ -34,9 +35,9 @@ func AddRoom(roomId string) bool {
 func UpdateRoomName(newRoomName, roomId string) bool {
 	query := "UPDATE rooms SET roomname = $1 WHERE roomid = $2"
 
-	_, err := db.Exec(query,newRoomName, roomId)
+	_, err := db.Exec(query, newRoomName, roomId)
 	if err != nil {
-		fmt.Printf("Error while updating room,%v", err)
+		log.Printf("Error while updating room,%v", err)
 		return false
 	}
 	return true
@@ -96,7 +97,7 @@ func AddUserInRoom(userId int, roomId string) error {
 		if err != nil {
 			return fmt.Errorf("error adding user to room: %v", err)
 		}
-		fmt.Printf("User %d added to room %s\n", userId, roomId)
+		log.Printf("User %d added to room %s\n", userId, roomId)
 	}
 
 	return nil
