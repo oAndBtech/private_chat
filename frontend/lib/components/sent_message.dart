@@ -30,8 +30,9 @@ class SentMessage extends StatelessWidget {
               color: Color.fromARGB(188, 50, 153, 102),
             ),
             child: Padding(
-              
-              padding: message.istext? const EdgeInsets.fromLTRB(8, 8, 8, 18) : const EdgeInsets.fromLTRB(3, 3, 3, 21),
+              padding: message.istext
+                  ? const EdgeInsets.fromLTRB(8, 8, 8, 18)
+                  : const EdgeInsets.fromLTRB(3, 3, 3, 21),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +47,7 @@ class SentMessage extends StatelessWidget {
                               url: utf8.decode(message.content),
                               isUrl: true,
                             )
-                          : Text(
+                          : SelectableText(
                               utf8.decode(message.content),
                               style: GoogleFonts.montserrat(
                                 fontSize: 16,
@@ -65,7 +66,7 @@ class SentMessage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(4),
               child: Text(
-                    message.timestamp!,
+                message.timestamp!,
                 style: GoogleFonts.montserrat(
                   fontSize: 10,
                   fontWeight: FontWeight.w400,

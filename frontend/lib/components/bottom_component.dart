@@ -8,6 +8,7 @@ import 'package:private_chat/components/send_button.dart';
 import 'package:private_chat/models/message_model.dart';
 import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
+import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/services/socket_services.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -24,16 +25,15 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
   void sendMessage() {
     String text = messageController.text.trim();
 
-    UserModel user = UserModel(
-        name: "bhaskar", phone: "98465", id: 1, fcmtoken: "xdrcvftgy");
+    int id = ref.watch(userIdProvider);
 
-    if (text.isNotEmpty && user.id != null) {
+    if (text.isNotEmpty && id != -1) {
 
       List<int> contentByte = utf8.encode(text);
       SocketService().sendMessage(text, widget.socket,true);
 
       MessageModel sentMsg = MessageModel(
-          sender: user.id!,
+          sender: id,
           receiver: "",
           istext: true,
           content: contentByte,

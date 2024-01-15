@@ -106,7 +106,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       int userId = ref.watch(userIdProvider);
       String roomId = ref.watch(roomIdProvider) ?? '-1';
       if (userId == -1 || roomId == '-1') {
-        // return;
+        return;
       }
       WebSocket ws = SocketService().buildSocketConnection(roomId, userId);
       setState(() {

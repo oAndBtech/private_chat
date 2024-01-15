@@ -38,7 +38,7 @@ class ReceivedMessage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    message.sendername!,
+                    message.sendername ?? '',
                     style: GoogleFonts.montserrat(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -51,7 +51,7 @@ class ReceivedMessage extends StatelessWidget {
                           url: utf8.decode(message.content),
                           isUrl: true,
                         )
-                      : Text(
+                      : SelectableText(
                           utf8.decode(message.content),
                           style: GoogleFonts.montserrat(
                             fontSize: 16,

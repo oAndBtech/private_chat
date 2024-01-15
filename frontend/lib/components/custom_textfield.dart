@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:private_chat/models/message_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
 import 'package:private_chat/providers/room_provider.dart';
+import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/screens/storage_service.dart';
 import 'package:private_chat/services/api_services.dart';
 import 'package:private_chat/services/socket_services.dart';
@@ -34,8 +35,8 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
   }
 
   Future<void> uploadImages(List<XFile> files, String storagePath) async {
-  String roomId = ref.read(roomIdProvider) ?? '-1';
-  int userId = 1;
+  String roomId = ref.watch(roomIdProvider) ?? '-1';
+  int userId = ref.watch(userIdProvider);
 
 
   await Future.wait(files.map((XFile element) async {
