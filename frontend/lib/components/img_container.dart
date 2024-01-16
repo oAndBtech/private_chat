@@ -32,7 +32,7 @@ class ImageContainer extends StatelessWidget {
         child: Hero(
           tag: "img_${url ?? bytes.hashCode}",
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(15),
             child: isUrl
                 ? CachedNetworkImage(
                     imageUrl: url!,
