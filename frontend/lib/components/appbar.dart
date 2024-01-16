@@ -200,18 +200,20 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
         tapPosition.dy + 40,
       ),
       items: <PopupMenuEntry>[
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'logout',
           child: Text(
             'Logout',
-            style: TextStyle(fontSize: 16),
+            style: GoogleFonts.montserrat(
+                fontSize: 16, fontWeight: FontWeight.w500, letterSpacing: -0.2),
           ),
         ),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'profile',
           child: Text(
             'Profile',
-            style: TextStyle(fontSize: 16),
+            style: GoogleFonts.montserrat(
+                fontSize: 16, fontWeight: FontWeight.w500, letterSpacing: -0.2),
           ),
         ),
         PopupMenuItem(
@@ -225,9 +227,12 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                     await changeNotificationStatus(v, setState);
                   },
                 ),
-                title: const Text(
+                title: Text(
                   "Notification",
-                  style: TextStyle(fontSize: 16),
+                  style: GoogleFonts.montserrat(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: -0.2),
                 ),
               );
             },
