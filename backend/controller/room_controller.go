@@ -20,18 +20,17 @@ func GetRoom(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	roomId, ok := params["id"]
 	if !ok {
-		log.Println("not a valid id while fetching room")
+		log.Println("Not a valid ID while fetching room")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Please provide a valid id")
+		json.NewEncoder(w).Encode(map[string]string{"error": "Please provide a valid ID"})
 		return
 	}
 
 	room, err := database.Room(roomId)
-
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Room not found"})
 		return
 	}
 
@@ -49,19 +48,19 @@ func AddRoom(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&room)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Invalid JSON format")
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid JSON format"})
 		return
 	}
 
 	result := database.AddRoom(room.RoomId)
 	if !result {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("error adding new room")
+		json.NewEncoder(w).Encode(map[string]string{"error": "Error adding new room"})
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode("Successfully room added")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Successfully added new room"})
 }
 
 func DeleteRoom(w http.ResponseWriter, r *http.Request) {
@@ -74,23 +73,23 @@ func DeleteRoom(w http.ResponseWriter, r *http.Request) {
 	roomId, ok := params["id"]
 
 	if !ok {
-		log.Println("Inavild Room ID")
+		log.Println("Invalid Room ID")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Invalid Room ID")
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid Room ID"})
 		return
 	}
 
 	err := database.DeleteRoom(roomId)
 
 	if err != nil {
-		log.Printf("failed to delete room id= %v, Error: %v", roomId, err)
+		log.Printf("Failed to delete room ID=%v, Error: %v", roomId, err)
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("failed to delete room")
+		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to delete room"})
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode("Successfully deleted")
+	w.WriteHeader(http.StatusNoContent)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Successfully deleted"})
 }
 
 func MessagesInRoom(w http.ResponseWriter, r *http.Request) {
@@ -105,18 +104,18 @@ func MessagesInRoom(w http.ResponseWriter, r *http.Request) {
 	roomId, ok := params["id"]
 
 	if !ok {
-		log.Println("Please provide a valid id")
+		log.Println("Please provide a valid ID")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Please provide a valid id")
+		json.NewEncoder(w).Encode(map[string]string{"error": "Please provide a valid ID"})
 		return
 	}
 
 	messages, err := database.AllMessagesInRoom(roomId)
 
 	if err != nil {
-		log.Printf("error while getting all messgaes in controller,%v", err)
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Failed to get all messages in room")
+		log.Printf("Error while getting all messages in controller: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to get all messages in room"})
 		return
 	}
 
@@ -140,17 +139,17 @@ func AllUserInRoom(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	roomId, ok := params["id"]
 	if !ok {
-		log.Println("Please provide a valid id")
+		log.Println("Please provide a valid ID")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Please provide a valid id")
+		json.NewEncoder(w).Encode(map[string]string{"error": "Please provide a valid ID"})
 		return
 	}
 
 	users, err := database.UsersInRoom(roomId)
 	if err != nil {
 		log.Printf("Error while fetching all users in a room: %v", err.Error())
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("failed to get all users")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to get all users"})
 		return
 	}
 
@@ -170,48 +169,50 @@ func UpdateRoom(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "application/json")
+
 	params := mux.Vars(r)
 	idStr, ok := params["id"]
 	if !ok {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Inavild ID"})
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid ID"})
 		return
 	}
 
 	var room model.RoomModel
-	err2 := json.NewDecoder(r.Body).Decode(&room)
-	if err2 != nil {
+	err := json.NewDecoder(r.Body).Decode(&room)
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Invalid JSON format"})
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid JSON format"})
 		return
 	}
 
 	isRoomExists, err := database.VerifyRoomId(idStr)
-
 	if err != nil || !isRoomExists {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Wrong Room ID (Room does not exists)"})
+		json.NewEncoder(w).Encode(map[string]string{"error": "Room does not exist"})
 		return
 	}
 
-	str := room.RoomName.(string)
+	str, ok := room.RoomName.(string)
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid room name format"})
+		return
+	}
 
 	result := database.UpdateRoomName(str, idStr)
-
-	if result {
-		if !result {
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"message": "failed to update room name"})
-			return
-		}
+	if !result {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to update room name"})
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(
-		map[string]string{
-			"message":  "Successfully Update",
-			"roomid":   idStr,
-			"roomname": str})
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"message":  "Successfully updated",
+		"roomid":   idStr,
+		"roomname": str,
+	})
 }
 
 func ExitRoom(w http.ResponseWriter, r *http.Request) {
@@ -219,52 +220,52 @@ func ExitRoom(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "application/json")
-	// Your code here
 
-	userID := r.URL.Query().Get("userId")
-	roomID := r.URL.Query().Get("roomId")
+	// Retrieve query parameters
+	userID := r.FormValue("userId")
+	roomID := r.FormValue("roomId")
 
 	userIdInteger, err := strconv.Atoi(userID)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{
-			"message": "Faild to exit",
+			"message": "Failed to exit",
 			"error":   err.Error(),
 		})
 		return
 	}
 
-	//check user exists in db or not
+	// Check if the user exists in the database
 	userExists := database.VerifyUser(userIdInteger)
 	if !userExists {
-		log.Println("WRONG USER ID")
+		log.Println("Wrong user ID")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{
-			"message": "Faild to exit",
-			"error":   "WRONG USER ID",
+			"message": "Failed to exit",
+			"error":   "Wrong user ID",
 		})
 		return
 	}
 
-	//check room id exists
+	// Check if the room ID exists
 	roomExists, err := database.VerifyRoomId(roomID)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{
-			"message": "Faild to exit",
+			"message": "Failed to exit",
 			"error":   err.Error(),
 		})
 		return
 	}
 
 	if !roomExists {
-		log.Println("WRONG ROOMID")
+		log.Println("Wrong room ID")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{
-			"message": "Faild to exit",
-			"error":   "WRONG ROOMID",
+			"message": "Failed to exit",
+			"error":   "Wrong room ID",
 		})
 		return
 	}
@@ -272,17 +273,16 @@ func ExitRoom(w http.ResponseWriter, r *http.Request) {
 	result := database.ExitRoom(userIdInteger, roomID)
 
 	if !result {
-		log.Println("FAILED TO EXIT ROOM")
-		w.WriteHeader(http.StatusBadRequest)
+		log.Println("Failed to exit room")
+		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{
-			"message": "Faild to exit",
+			"message": "Failed to exit",
 		})
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{
-		"message": "Successfully Exited Room",
+		"message": "Successfully exited room",
 	})
-
 }
