@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:private_chat/components/custom_textfield.dart';
 import 'package:private_chat/components/send_button.dart';
 import 'package:private_chat/models/message_model.dart';
-import 'package:private_chat/models/user_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
 import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/services/socket_services.dart';

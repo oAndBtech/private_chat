@@ -72,6 +72,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     if (userId == -1) {
       return;
     }
+    if (kIsWeb) {
+      ApiService().updateWebFcmToken(token, userId);
+      return;
+    }
     ApiService().updateFcmToken(token, userId);
   }
 

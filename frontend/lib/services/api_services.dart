@@ -27,7 +27,7 @@ class ApiService {
     try {
       final response = await http.get(Uri.parse("$backendUrl/user/$id"));
 
-      if (response.statusCode == 200) {
+      if (response.statusCode < 300) {
         final jsonResponse = jsonDecode(response.body);
 
         return UserModel(
@@ -59,7 +59,7 @@ class ApiService {
 
       final jsonResponse = jsonDecode(response.body);
 
-      if (response.statusCode == 200 || response.statusCode == 409) {
+      if (response.statusCode < 300 || response.statusCode == 409) {
         if (jsonResponse["id"] != null &&
             jsonResponse["name"] != null &&
             jsonResponse["phone"] != null) {
@@ -68,6 +68,7 @@ class ApiService {
               name: jsonResponse["name"],
               phone: jsonResponse["phone"],
               fcmtoken: jsonResponse["fcmtoken"],
+              notif: jsonResponse["notif"],
               webfcmtoken: jsonResponse["webfcmtoken"]);
           return ResponseData(response.statusCode, userModel);
         } else {
@@ -87,12 +88,9 @@ class ApiService {
   Future<bool> updateUser(UserModel user, int id) async {
     try {
       final response = await http.post(Uri.parse("$backendUrl/user/$id"),
-          body: jsonEncode({
-            "name": user.name,
-            "fcmtoken": user.fcmtoken
-          }));
+          body: jsonEncode({"name": user.name, "fcmtoken": user.fcmtoken}));
 
-      return response.statusCode == 200;
+      return response.statusCode < 300;
     } catch (e) {
       print("Error in updateUser: $e");
       return false;
@@ -104,7 +102,7 @@ class ApiService {
       final response = await http.post(Uri.parse("$backendUrl/user/$id"),
           body: jsonEncode({"fcmtoken": fcmtoken}));
 
-      return response.statusCode == 200;
+      return response.statusCode < 300;
     } catch (e) {
       print("Error in updateFcmToken: $e");
       return false;
@@ -116,7 +114,7 @@ class ApiService {
       final response = await http.post(Uri.parse("$backendUrl/user/$id"),
           body: jsonEncode({"webfcmtoken": webfcmtoken}));
 
-      return response.statusCode == 200;
+      return response.statusCode < 300;
     } catch (e) {
       print("Error in updateWebFcmToken: $e");
       return false;
@@ -127,7 +125,7 @@ class ApiService {
     try {
       final response = await http.delete(Uri.parse("$backendUrl/user/$id"));
 
-      return response.statusCode == 200;
+      return response.statusCode < 300;
     } catch (e) {
       print("Error in deleteUser: $e");
       return false;
@@ -140,7 +138,7 @@ class ApiService {
           body: jsonEncode({"roomid": room.roomId, "roomname": room.roomName}));
 
       final jsonResponse = jsonDecode(response.body);
-      if (response.statusCode == 200 || response.statusCode == 409) {
+      if (response.statusCode < 300 || response.statusCode == 409) {
         return RoomModel(
             roomId: jsonResponse["roomid"],
             roomName: jsonResponse["roomname"],
@@ -158,7 +156,7 @@ class ApiService {
     try {
       final response = await http.delete(Uri.parse("$backendUrl/room/$id"));
 
-      return response.statusCode == 200;
+      return response.statusCode < 300;
     } catch (e) {
       print("Error in deleteRoom: $e");
       return false;
@@ -169,7 +167,7 @@ class ApiService {
     try {
       final response = await http.get(Uri.parse("$backendUrl/room/$id"));
 
-      if (response.statusCode == 200) {
+      if (response.statusCode < 300) {
         final jsonResponse = jsonDecode(response.body);
 
         return RoomModel(
@@ -190,7 +188,7 @@ class ApiService {
     try {
       final response = await http.get(Uri.parse("$backendUrl/room/$id/users"));
 
-      if (response.statusCode == 200) {
+      if (response.statusCode < 300) {
         List<dynamic> jsonResponse = jsonDecode(response.body);
         return jsonResponse
             .map((user) => UserModel(
@@ -212,7 +210,7 @@ class ApiService {
       final response =
           await http.get(Uri.parse("$backendUrl/room/$id/messages"));
 
-      if (response.statusCode == 200) {
+      if (response.statusCode < 300) {
         List<dynamic> jsonResponse = jsonDecode(response.body);
 
         return jsonResponse
@@ -233,18 +231,34 @@ class ApiService {
     }
   }
 
-  updateNotificationStatus(int id, bool value) async {
+  Future<bool> updateNotificationStatus(int id, bool value) async {
     try {
       final response = await http.post(Uri.parse("$backendUrl/user/$id/notif"),
           body: jsonEncode({"notif": value}));
 
-      if (response.statusCode == 200) {
+      if (response.statusCode < 300) {
         return true;
       } else {
         return false;
       }
     } catch (e) {
       print("ERROR in updateNotificationStatus : $e");
+      return false;
+    }
+  }
+
+  Future<bool> exitRoom(int userId, String roomId) async {
+    try {
+      final response = await http
+          .delete(Uri.parse("$backendUrl/room?roomId=$roomId&userId=$userId"));
+
+      if (response.statusCode < 300) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("ERROR in exitRoom : $e");
       return false;
     }
   }

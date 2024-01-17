@@ -14,11 +14,7 @@ import 'package:private_chat/services/shared_services.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  if (kIsWeb) {
     await dotenv.load(fileName: "env");
-  } else {
-    await dotenv.load(fileName: "env");
-  }
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -104,13 +100,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   checkLoginStatus() async {
     int? id = await SharedService().getUserId();
-    // if (id != null) {
     await addUserToTheProviders(id);
-    // }else{
-    //   setState(() {
-    //     isLoggedin = false;
-    //   });
-    // }
   }
 
   @override
@@ -119,7 +109,6 @@ class _MyAppState extends ConsumerState<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Our Chat App',
       home: !isLoggedin ? const SignUpScreen() : const LoginScreen(),
-      // home: ChatPage(),
     );
   }
 }

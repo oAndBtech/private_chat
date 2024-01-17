@@ -217,6 +217,14 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
           ),
         ),
         PopupMenuItem(
+          value: 'exit',
+          child: Text(
+            'Leave Room',
+            style: GoogleFonts.montserrat(
+                fontSize: 16, fontWeight: FontWeight.w500, letterSpacing: -0.2),
+          ),
+        ),
+        PopupMenuItem(
           value: 'notif',
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
@@ -246,6 +254,9 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
           break;
         case "profile":
           Scaffold.of(context).openEndDrawer();
+          break;
+        case "exit":
+          exitRoom();
           break;
         case "notif":
           bool v = ref.watch(notificationProvider);
@@ -278,7 +289,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
     }
   }
 
-  logout() {
+  void logout() {
     showDialog(
         context: context,
         builder: ((context) => AlertDialog(
@@ -325,5 +336,20 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                             color: const Color(0xff000000))))
               ],
             )));
+  }
+
+  exitRoom() async {
+    bool result = await ApiService()
+        .exitRoom(ref.watch(userIdProvider), ref.watch(roomIdProvider) ?? '');
+    if (result) {
+      logout();
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Center(
+          child: Text("Something went wrong!"),
+        )));
+      }
+    }
   }
 }
