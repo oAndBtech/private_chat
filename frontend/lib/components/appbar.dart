@@ -256,7 +256,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
           Scaffold.of(context).openEndDrawer();
           break;
         case "exit":
-          exitRoom();
+          exitRoomDialog();
           break;
         case "notif":
           bool v = ref.watch(notificationProvider);
@@ -338,18 +338,74 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
             )));
   }
 
-  exitRoom() async {
-    bool result = await ApiService()
-        .exitRoom(ref.watch(userIdProvider), ref.watch(roomIdProvider) ?? '');
-    if (result) {
-      logout();
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Center(
-          child: Text("Something went wrong!"),
-        )));
-      }
-    }
+  void exitRoomDialog() {
+    showDialog(
+        context: context,
+        builder: ((context) => AlertDialog(
+              backgroundColor: const Color(0xff111216),
+              title: Text(
+                'Are you sure you want to leave this room?',
+                style: GoogleFonts.montserrat(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: const Color(0xffFFFFFF)),
+              ),
+              actions: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Cancel',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xff000000)))),
+                ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateColor.resolveWith(
+                            (states) =>
+                                const Color.fromARGB(255, 50, 153, 101))),
+                    onPressed: () async {
+                      bool res = await ApiService().exitRoom(
+                          ref.watch(userIdProvider),
+                          ref.watch(roomIdProvider) ?? '');
+                      if (!res) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                                  content: Center(
+                            child: Text("Something went wrong!"),
+                          )));
+                        }
+                        return;
+                      }
+                      if (mounted) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                                content: Center(
+                          child: Text("Successfully left the room!"),
+                        )));
+                      }
+                      if (widget.socket != null) {
+                        SocketService().closeConnection(widget.socket!);
+                      }
+                      if (mounted) {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            CustomPageRoute(child: const LoginScreen()),
+                            (route) => false);
+                      }
+                      ref.read(roomIdProvider.notifier).state = null;
+                      ref.read(roomProvider.notifier).clearState();
+                      ref.read(usersInRoomProvider.notifier).deleteAllUsers();
+                      ref.read(messageProvider.notifier).deleteAllMessages();
+                    },
+                    child: Text('Leave',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xff000000))))
+              ],
+            )));
   }
 }
