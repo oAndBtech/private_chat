@@ -135,3 +135,15 @@ func UsersInRoom(roomId string) ([]model.UserModel, error) {
 	}
 	return users, nil
 }
+
+func ExitRoom(userId int, roomId string) bool {
+	query := "DELETE FROM room_user WHERE roomId = $1 AND userId = $2"
+
+	_, err := db.Exec(query, roomId, userId)
+
+	if err != nil {
+		log.Printf("ERROR while exiting room: %v", err)
+		return false
+	}
+	return true
+}

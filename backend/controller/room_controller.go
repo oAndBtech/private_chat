@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/oAndBtech/private_chat/backend/database"
@@ -211,4 +212,77 @@ func UpdateRoom(w http.ResponseWriter, r *http.Request) {
 			"message":  "Successfully Update",
 			"roomid":   idStr,
 			"roomname": str})
+}
+
+func ExitRoom(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Content-Type", "application/json")
+	// Your code here
+
+	userID := r.URL.Query().Get("userId")
+	roomID := r.URL.Query().Get("roomId")
+
+	userIdInteger, err := strconv.Atoi(userID)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"message": "Faild to exit",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	//check user exists in db or not
+	userExists := database.VerifyUser(userIdInteger)
+	if !userExists {
+		log.Println("WRONG USER ID")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"message": "Faild to exit",
+			"error":   "WRONG USER ID",
+		})
+		return
+	}
+
+	//check room id exists
+	roomExists, err := database.VerifyRoomId(roomID)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"message": "Faild to exit",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	if !roomExists {
+		log.Println("WRONG ROOMID")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"message": "Faild to exit",
+			"error":   "WRONG ROOMID",
+		})
+		return
+	}
+
+	result := database.ExitRoom(userIdInteger, roomID)
+
+	if !result {
+		log.Println("FAILED TO EXIT ROOM")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"message": "Faild to exit",
+		})
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Successfully Exited Room",
+	})
+
 }
