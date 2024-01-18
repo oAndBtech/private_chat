@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:private_chat/models/user_model.dart';
@@ -10,21 +11,31 @@ import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/screens/login_screen.dart';
 import 'package:private_chat/screens/sign_up_screen.dart';
 import 'package:private_chat/services/api_services.dart';
+import 'package:private_chat/services/local_notifs.dart';
 import 'package:private_chat/services/shared_services.dart';
 import 'firebase_options.dart';
 
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
 void main() async {
-    await dotenv.load(fileName: "env");
+  await dotenv.load(fileName: "env");
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await LocalNotification(flutterLocalNotificationsPlugin)
+      .initializeNotifications();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(const ProviderScope(child: MyApp()));
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+  // String title = message.notification?.title ?? "New Message!";
+  // String body = message.notification?.body ?? "Someone sent a message";
+  // LocalNotification(flutterLocalNotificationsPlugin)
+  //     .showNotification(title, body);
 }
 
 class MyApp extends ConsumerStatefulWidget {
@@ -35,7 +46,6 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
-  GlobalKey _globalKey = GlobalKey();
   // This widget is the root of your application.
   // bool isLoading = true;
   bool isLoggedin = false;
@@ -43,7 +53,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   checkStatus() {
     print(status);
-    if (status > 1) {
+    if (status > 0) {
       setState(() {
         FlutterNativeSplash.remove();
       });
@@ -82,20 +92,21 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {});
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    setupFirebaseListeners();
+    // setupFirebaseListeners();
     checkLoginStatus();
   }
 
-  setupFirebaseListeners() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      await handleMessage(message);
-    });
-    setState(() {
-      status++;
-      checkStatus();
-    });
-  }
+  // setupFirebaseListeners() {
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+  //     await handleMessage(message);
+  //   });
+  //   setState(() {
+  //     status++;
+  //     checkStatus();
+  //   });
+  // }
 
   handleMessage(RemoteMessage message) async {}
 
