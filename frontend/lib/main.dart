@@ -47,15 +47,15 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   // This widget is the root of your application.
-  // bool isLoading = true;
+  bool isLoading = true;
   bool isLoggedin = false;
   int status = 0;
 
   checkStatus() {
     print(status);
-    if (status > 0) {
+    if (status > 1) {
       setState(() {
-        FlutterNativeSplash.remove();
+        isLoading = false;
       });
     }
   }
@@ -92,21 +92,21 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {});
+    FlutterNativeSplash.remove();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    // setupFirebaseListeners();
+    setupFirebaseListeners();
     checkLoginStatus();
   }
 
-  // setupFirebaseListeners() {
-  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-  //     await handleMessage(message);
-  //   });
-  //   setState(() {
-  //     status++;
-  //     checkStatus();
-  //   });
-  // }
+  setupFirebaseListeners() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      await handleMessage(message);
+    });
+    setState(() {
+      status++;
+      checkStatus();
+    });
+  }
 
   handleMessage(RemoteMessage message) async {}
 
@@ -120,7 +120,13 @@ class _MyAppState extends ConsumerState<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Our Chat App',
-      home: !isLoggedin ? const SignUpScreen() : const LoginScreen(),
+      home: isLoading
+          ? const Scaffold(
+              backgroundColor:Color(0xff111216),
+              body: Center(child: CircularProgressIndicator()))
+          : !isLoggedin
+              ? const SignUpScreen()
+              : const LoginScreen(),
     );
   }
 }

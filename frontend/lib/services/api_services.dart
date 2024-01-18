@@ -249,8 +249,9 @@ class ApiService {
 
   Future<bool> exitRoom(int userId, String roomId) async {
     try {
-      final response = await http
-          .delete(Uri.parse("$backendUrl/room?roomId=$roomId&userId=$userId"));
+      final response = await http.delete(
+          Uri.parse("$backendUrl/room?roomId=$roomId&userId=$userId"),
+          headers: {"Access-Control-Allow-Origin": "*"});
 
       if (response.statusCode < 300) {
         return true;
