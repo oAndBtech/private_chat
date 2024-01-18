@@ -12,11 +12,6 @@ import (
 )
 
 func GetRoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json")
-
 	params := mux.Vars(r)
 	roomId, ok := params["id"]
 	if !ok {
@@ -39,11 +34,6 @@ func GetRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddRoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json")
-
 	var room model.RoomModel
 	err := json.NewDecoder(r.Body).Decode(&room)
 	if err != nil {
@@ -64,11 +54,6 @@ func AddRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteRoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "DELETE")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json")
-
 	params := mux.Vars(r)
 	roomId, ok := params["id"]
 
@@ -93,13 +78,6 @@ func DeleteRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func MessagesInRoom(w http.ResponseWriter, r *http.Request) {
-	// Set CORS headers
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-	w.Header().Set("Content-Type", "application/json")
-
 	params := mux.Vars(r)
 	roomId, ok := params["id"]
 
@@ -131,11 +109,6 @@ func MessagesInRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func AllUserInRoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json")
-
 	params := mux.Vars(r)
 	roomId, ok := params["id"]
 	if !ok {
@@ -165,11 +138,6 @@ func AllUserInRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateRoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json")
-
 	params := mux.Vars(r)
 	idStr, ok := params["id"]
 	if !ok {
@@ -216,10 +184,6 @@ func UpdateRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func ExitRoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json")
 
 	// Retrieve query parameters
 	userID := r.FormValue("userId")

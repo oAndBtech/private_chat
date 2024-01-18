@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/oAndBtech/private_chat/backend/controller"
 
@@ -10,6 +11,13 @@ import (
 func Router() *mux.Router {
 
 	r := mux.NewRouter()
+
+	headersOk := handlers.AllowedHeaders([]string{"Content-Type"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
+
+	// Apply CORS middleware to the router
+	r.Use(handlers.CORS(headersOk, originsOk, methodsOk))
 
 	//WEBSCOKET Connection
 	r.HandleFunc("/ws", websocket.HandleConnections)
