@@ -17,7 +17,8 @@ class ImageContainer extends StatelessWidget {
       onTap: () {
         Navigator.push(
             context,
-            CustomPageRoute(child: ImageViewer(
+            MaterialPageRoute(
+                builder: (ctx) => ImageViewer(
                       isUrl: isUrl,
                       bytes: bytes,
                       url: url,

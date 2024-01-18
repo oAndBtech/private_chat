@@ -94,13 +94,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 10, bottom: 0),
-                        alignment: Alignment.topRight,
+                        alignment: Alignment.topLeft,
                         child: RichText(
                           text: TextSpan(
                             text: "Not a user? ",
                             style: GoogleFonts.montserrat(
                               fontSize: 15,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w400,
                               letterSpacing: -0.2,
                               color: const Color(0xffFFFFFF),
                             ),
@@ -108,10 +108,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               TextSpan(
                                   text: "Sign up",
                                   style: GoogleFonts.montserrat(
-                                    fontSize: 16,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.w500,
                                     letterSpacing: -0.2,
-                                    color:
+                                    color:  
                                         const Color.fromARGB(255, 14, 153, 245),
                                   ),
                                   recognizer: TapGestureRecognizer()

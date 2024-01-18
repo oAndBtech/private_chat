@@ -35,6 +35,7 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
+  GlobalKey _globalKey = GlobalKey();
   // This widget is the root of your application.
   // bool isLoading = true;
   bool isLoggedin = false;
