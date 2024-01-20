@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:private_chat/components/img_container.dart';
@@ -20,8 +21,8 @@ class ReceivedMessage extends StatelessWidget {
           Container(
             margin: const EdgeInsets.fromLTRB(8, 8, 0, 0),
             constraints: BoxConstraints(
-              minWidth: width * 0.25,
-              maxWidth: width * 0.65,
+              maxWidth: kIsWeb ? width * 0.45 : width * 0.65,
+                minWidth: kIsWeb ? width * 0.1 : width * 0.25
             ),
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
