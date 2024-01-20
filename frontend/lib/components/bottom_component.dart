@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:private_chat/components/custom_textfield.dart';
@@ -58,22 +59,33 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
   @override
   Widget build(BuildContext context) {
     return kIsWeb
-        ? Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              CustomTextfield(
-                socket: widget.socket,
-                messageController: messageController,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 11, left: 20),
-                child: SendButton(send: () {
-                  sendMessage();
-                }),
-              )
-            ],
-          )
+        ? RawKeyboardListener(
+          autofocus: true,
+              focusNode: FocusNode(),
+              onKey: (event) {
+                if (event is RawKeyDownEvent) {
+                  if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+                    sendMessage();
+                  }
+                }
+              },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                CustomTextfield(
+                  socket: widget.socket,
+                  messageController: messageController,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 11, left: 20),
+                  child: SendButton(send: () {
+                    sendMessage();
+                  }),
+                )
+              ],
+            ),
+        )
         : Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.end,
