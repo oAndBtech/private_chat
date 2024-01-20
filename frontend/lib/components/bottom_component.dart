@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -27,9 +28,8 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
     int id = ref.watch(userIdProvider);
 
     if (text.isNotEmpty && id != -1) {
-
       List<int> contentByte = utf8.encode(text);
-      SocketService().sendMessage(text, widget.socket,true);
+      SocketService().sendMessage(text, widget.socket, true);
 
       MessageModel sentMsg = MessageModel(
           sender: id,
@@ -43,7 +43,7 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
     messageController.clear();
   }
 
-   String formatTimestamp(String timestampString) {
+  String formatTimestamp(String timestampString) {
     DateTime timestamp = DateTime.parse(timestampString).toLocal();
     DateTime currentDate = DateTime.now();
     if (timestamp.year == currentDate.year &&
@@ -57,21 +57,38 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        CustomTextfield(
-          socket: widget.socket,
-          messageController: messageController,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 11),
-          child: SendButton(send: () {
-            sendMessage();
-          }),
-        )
-      ],
-    );
+    return kIsWeb
+        ? Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              CustomTextfield(
+                socket: widget.socket,
+                messageController: messageController,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 11, left: 20),
+                child: SendButton(send: () {
+                  sendMessage();
+                }),
+              )
+            ],
+          )
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              CustomTextfield(
+                socket: widget.socket,
+                messageController: messageController,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 11),
+                child: SendButton(send: () {
+                  sendMessage();
+                }),
+              )
+            ],
+          );
   }
 }
