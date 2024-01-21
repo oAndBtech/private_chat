@@ -8,9 +8,9 @@ import (
 	"github.com/oAndBtech/private_chat/backend/model"
 )
 
-func AddMessage(userId int, roomId string, msg []byte, isText bool, senderName string) bool {
-	query := "INSERT INTO messages (content, sender, receiver, istext, sendername) VALUES ($1, $2, $3, $4, $5)"
-	_, err := db.Exec(query, msg, userId, roomId, isText, senderName) //TODO: take isText variable from frontend and then change it
+func AddMessage(userId int, roomId string, msg []byte, isText bool, senderName string, uniqueId string, replyTo any) bool {
+	query := "INSERT INTO messages (content, sender, receiver, istext, sendername, uniqueid, replyto) VALUES ($1, $2, $3, $4, $5, $6, $7)"
+	_, err := db.Exec(query, msg, userId, roomId, isText, senderName, uniqueId, replyTo)
 	if err != nil {
 		log.Println(err)
 		return false
@@ -29,7 +29,7 @@ func AllMessagesInRoom(roomId string) ([]model.MessageModel, error) {
 
 	for rows.Next() {
 		var message model.MessageModel
-		err := rows.Scan(&message.ID, &message.Content, &message.Sender, &message.Receiver, &message.IsText, &message.Timestamp, &message.SenderName)
+		err := rows.Scan(&message.ID, &message.Content, &message.Sender, &message.Receiver, &message.IsText, &message.Timestamp, &message.SenderName, &message.UniqueId, &message.ReplyTo)
 		if err != nil {
 			return nil, fmt.Errorf("error scanning message row: %v", err)
 		}

@@ -8,4 +8,6 @@ type MessageModel struct {
 	IsText     bool   `json:"istext"`
 	Timestamp  string `json:"timestamp"`
 	SenderName string `json:"sendername"`
+	UniqueId   string `json:"uniqueid"`
+	ReplyTo    any    `json:"replyto"`
 }

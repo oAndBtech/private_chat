@@ -20,6 +20,8 @@ type Message struct {
 	Content   string `json:"content"`
 	IsText    bool   `json:"istext"`
 	Timestamp string `json:"timestamp"`
+	UniqueId  string `json:"uniqueid"`
+	ReplyTo   any    `json:"replyto"`
 }
 
 var (
@@ -102,6 +104,8 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			Content:   jsonMsg.Content,
 			IsText:    jsonMsg.IsText,
 			Timestamp: currentTime.Format(time.RFC3339),
+			UniqueId:  jsonMsg.UniqueId,
+			ReplyTo:   jsonMsg.ReplyTo,
 		}
 
 		broadcastJSON, err := json.Marshal(broadcastMsg)
@@ -110,7 +114,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content), jsonMsg.IsText, senderName)
+		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content), jsonMsg.IsText, senderName,jsonMsg.UniqueId,jsonMsg.ReplyTo)
 		broadcast(roomID, conn, broadcastJSON)
 		notifications.NewMessageArriveNotification(roomID, senderName, userIdInteger, jsonMsg.IsText)
 	}
@@ -145,8 +149,8 @@ func broadcast(roomID string, sender *websocket.Conn, message []byte) {
 	}
 }
 
-func storeMessage(senderId int, roomId string, msg []byte, isText bool, senderName string) {
-	res := database.AddMessage(senderId, roomId, msg, isText, senderName)
+func storeMessage(senderId int, roomId string, msg []byte, isText bool, senderName string, uniqueid string, replyto any) {
+	res := database.AddMessage(senderId, roomId, msg, isText, senderName, uniqueid, replyto)
 	if !res {
 		log.Println("failed to add msg in db")
 	}
