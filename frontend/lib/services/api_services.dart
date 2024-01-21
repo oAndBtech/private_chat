@@ -215,6 +215,8 @@ class ApiService {
 
         return jsonResponse
             .map((message) => MessageModel(
+                replyto: message["replyto"],
+                uniqueid: message["uniqueid"] ?? '',
                 id: message["id"],
                 sender: message["sender"],
                 sendername: message["sendername"],

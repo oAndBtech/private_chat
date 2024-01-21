@@ -7,6 +7,8 @@ class MessageModel {
   final List<int> content; 
   final String? sendername;
   final bool? isOffline;
+  final String uniqueid;
+  final String? replyto;
 
   MessageModel({
     this.id,
@@ -16,6 +18,8 @@ class MessageModel {
     this.timestamp,
     required this.content,
     this.sendername,
-    this.isOffline
+    this.isOffline,
+    this.replyto,
+    required this.uniqueid
   });
 }

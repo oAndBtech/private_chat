@@ -10,8 +10,10 @@ import 'package:private_chat/components/custom_textfield.dart';
 import 'package:private_chat/components/send_button.dart';
 import 'package:private_chat/models/message_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
+import 'package:private_chat/providers/room_provider.dart';
 import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/services/socket_services.dart';
+import 'package:private_chat/services/uniqueid.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -31,9 +33,7 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
           color: Colors.blue,
         ),
       },
-      onMatch: (List<String> matches) {
-        
-      },
+      onMatch: (List<String> matches) {},
       deleteOnBack: true,
       regExpUnicode: true);
 
@@ -41,12 +41,17 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
     String text = messageController.text.trim();
 
     int id = ref.watch(userIdProvider);
+    String roomId = ref.watch(roomIdProvider) ?? 'roomID';
 
     if (text.isNotEmpty && id != -1) {
       List<int> contentByte = utf8.encode(text);
-      SocketService().sendMessage(text, widget.socket, true);
+      String uniqueid = UniqueIdService().generateUniqueId(id, roomId);
+      SocketService().sendMessage(text, widget.socket, true, uniqueid,
+          null); //TODO change this reply to accordingly
 
       MessageModel sentMsg = MessageModel(
+          uniqueid: uniqueid,
+          replyto: null, //TODO: handle this
           sender: id,
           receiver: "",
           istext: true,

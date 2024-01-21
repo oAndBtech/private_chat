@@ -13,15 +13,17 @@ class SocketService {
     return socket;
   }
 
-  sendMessage(String msg, WebSocket? socket, bool isText) {
+  sendMessage(String msg, WebSocket? socket, bool isText, String uniqueid,
+      String? replyto) {
     if (socket == null) return;
     final jsonContent = jsonEncode({
       'content': msg,
       'istext': isText,
+      'uniqueId': uniqueid,
+      'replyto': replyto
     });
     socket.send(jsonContent);
   }
-
 
   closeConnection(WebSocket socket) {
     socket.close();

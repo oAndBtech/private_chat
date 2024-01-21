@@ -15,6 +15,7 @@ import 'package:private_chat/providers/users_in_room_provider.dart';
 import 'package:private_chat/services/storage_service.dart';
 import 'package:private_chat/services/api_services.dart';
 import 'package:private_chat/services/socket_services.dart';
+import 'package:private_chat/services/uniqueid.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -46,7 +47,10 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
 
     await Future.wait(files.map((XFile element) async {
       List<int> imageBytes = await element.readAsBytes();
+      String uniqueid = UniqueIdService().generateUniqueId(userId, roomId);
       MessageModel msg = MessageModel(
+          replyto: null,//TODO: handle this
+          uniqueid: uniqueid,
           istext: false,
           content: imageBytes,
           sender: userId,
@@ -63,7 +67,8 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
       }
 
       if (img != null) {
-        SocketService().sendMessage(img, widget.socket, false);
+        SocketService().sendMessage(img, widget.socket, false, uniqueid,
+            null); //TODO change this reply to accordingly
       }
     }));
 

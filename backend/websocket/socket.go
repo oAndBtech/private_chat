@@ -135,8 +135,6 @@ func broadcast(roomID string, sender *websocket.Conn, message []byte) {
 	clientsMutex.Lock()
 	defer clientsMutex.Unlock()
 
-	//TODO: send notification
-
 	for conn := range clients[roomID] {
 		if conn != sender {
 			err := conn.WriteMessage(websocket.TextMessage, message)
