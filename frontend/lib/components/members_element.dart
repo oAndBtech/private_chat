@@ -12,28 +12,31 @@ class MemberElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RichText(text: TextSpan(
-            text: name,
-            style: GoogleFonts.montserrat(
-              fontSize: 18,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xffFFFFFF) 
-            )
-          )),
-          RichText(text: TextSpan(
-            text: number,
-            style: GoogleFonts.montserrat(
-              fontSize: 11,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xffBABABA) 
-            )
-          ))
-        ],
+    return SizedBox(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RichText(text: TextSpan(
+              text: name,
+              style: GoogleFonts.montserrat(
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xffFFFFFF) 
+              )
+            )),
+            RichText(text: TextSpan(
+              text: number,
+              style: GoogleFonts.montserrat(
+                fontSize: 11,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xffBABABA) 
+              )
+            ))
+          ],
+        ),
       ),
     );
   }

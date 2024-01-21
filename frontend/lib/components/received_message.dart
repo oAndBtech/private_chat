@@ -22,7 +22,7 @@ class ReceivedMessage extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(8, 8, 0, 0),
             constraints: BoxConstraints(
               maxWidth: kIsWeb ? width * 0.45 : width * 0.65,
-                minWidth: kIsWeb ? width * 0.1 : width * 0.25
+                minWidth: 120
             ),
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(

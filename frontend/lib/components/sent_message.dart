@@ -20,8 +20,8 @@ class SentMessage extends StatelessWidget {
         children: [
           Container(
             margin: const EdgeInsets.fromLTRB(0, 8, 8, 0),
-            constraints:
-                BoxConstraints(maxWidth: width * 0.65, minWidth: width * 0.25),
+            constraints: BoxConstraints(
+                maxWidth: kIsWeb ? width * 0.45 : width * 0.65, minWidth: 120),
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(18),
