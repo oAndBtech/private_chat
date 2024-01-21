@@ -15,12 +15,13 @@ import 'package:private_chat/providers/users_in_room_provider.dart';
 import 'package:private_chat/services/storage_service.dart';
 import 'package:private_chat/services/api_services.dart';
 import 'package:private_chat/services/socket_services.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 class CustomTextfield extends ConsumerStatefulWidget {
   const CustomTextfield(
       {super.key, required this.messageController, this.socket});
-  final TextEditingController messageController;
+  final RichTextController messageController;
   final WebSocket? socket;
 
   @override
@@ -101,7 +102,8 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
           children: [
             if (showPersonTags)
               Container(
-                constraints: const BoxConstraints(maxHeight: 180),
+                constraints:
+                    BoxConstraints(maxHeight: usrs.length >= 2 ? 120 : 80),
                 padding: const EdgeInsets.fromLTRB(36, 16, 0, 16),
                 child: ListView.builder(
                   itemCount: usrs.length,
@@ -168,7 +170,9 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
                     minLines: 1,
                     maxLines: 4,
                     onChanged: (value) {
-                      if (value.endsWith(" @") || value == "@" || value.endsWith("\n@") ) {
+                      if (value.endsWith(" @") ||
+                          value == "@" ||
+                          value.endsWith("\n@")) {
                         setState(() {
                           showPersonTags = true;
                         });

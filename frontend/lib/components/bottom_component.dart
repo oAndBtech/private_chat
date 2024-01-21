@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:private_chat/components/custom_textfield.dart';
 import 'package:private_chat/components/send_button.dart';
@@ -11,6 +12,7 @@ import 'package:private_chat/models/message_model.dart';
 import 'package:private_chat/providers/message_provider.dart';
 import 'package:private_chat/providers/user_provider.dart';
 import 'package:private_chat/services/socket_services.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 class BottomComponent extends ConsumerStatefulWidget {
@@ -21,7 +23,19 @@ class BottomComponent extends ConsumerStatefulWidget {
 }
 
 class _BottomComponentState extends ConsumerState<BottomComponent> {
-  TextEditingController messageController = TextEditingController();
+  RichTextController messageController = RichTextController(
+      patternMatchMap: {
+        RegExp(r"@(.*)+\(+([6789]\d{9})+\)"): GoogleFonts.montserrat(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: Colors.blue,
+        ),
+      },
+      onMatch: (List<String> matches) {
+        
+      },
+      deleteOnBack: true,
+      regExpUnicode: true);
 
   void sendMessage() {
     String text = messageController.text.trim();
@@ -60,17 +74,17 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
   Widget build(BuildContext context) {
     return kIsWeb
         ? RawKeyboardListener(
-          autofocus: true,
-              focusNode: FocusNode(),
-              onKey: (event) {
-                if (event is RawKeyDownEvent) {
-                  if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
-                    sendMessage();
-                  }
+            autofocus: true,
+            focusNode: FocusNode(),
+            onKey: (event) {
+              if (event is RawKeyDownEvent) {
+                if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+                  sendMessage();
                 }
-              },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+              }
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 CustomTextfield(
@@ -85,7 +99,7 @@ class _BottomComponentState extends ConsumerState<BottomComponent> {
                 )
               ],
             ),
-        )
+          )
         : Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.end,

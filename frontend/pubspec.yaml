@@ -57,6 +57,7 @@ dependencies:
   url_launcher: ^6.2.3
   universal_html: ^2.2.4
   flutter_local_notifications: ^16.3.0
+  rich_text_controller: ^1.4.2
 
 dev_dependencies:
   flutter_test:

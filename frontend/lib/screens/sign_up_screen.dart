@@ -26,7 +26,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   TextEditingController phoneController = TextEditingController();
 
   bool finalPhoneNumberRegex(String phone) {
-    RegExp phoneNumberRegExp = RegExp(r'^(\+91[\s]?)?[6789]\d{9}$');
+    RegExp phoneNumberRegExp = RegExp(r'^[6789]\d{9}$');
     if (phoneNumberRegExp.hasMatch(phone)) {
       return true;
     }
@@ -34,13 +34,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   bool firstDigitRegex(String input) {
-    RegExp regex = RegExp(r'^(\+91[\s]?)?[6789]');
+    RegExp regex = RegExp(r'^[6789]');
 
     if (regex.hasMatch(input)) {
       return true;
     }
     return false;
   }
+  bool showError = false;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +105,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   height: 10,
                 ),
                 TextFormField(
+                  
                   controller: phoneController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -112,13 +114,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     if (!firstDigitRegex(value)) {
                       return "Please Enter a valid phone number!";
                     }
-                    if ((value.contains("+91") && value.length > 13) ||
-                        (!value.contains("+91") && value.length > 10) ||
-                        (value.contains("+91 ") && value.length > 14)) {
+                    if (value.length > 10) {
                       return "Please Enter a valid phone number!";
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    setState(() {
+                      showError=false;
+                    });
+                  },
+                  
                   keyboardType: TextInputType.phone,
                   keyboardAppearance: Brightness.dark,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -129,6 +135,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       color: const Color(0xffFFFFFF)),
                   cursorColor: const Color(0xffFFFFFF).withOpacity(0.7),
                   decoration: InputDecoration(
+                    errorText: showError
+                              ? "Please Enter a valid phone number!"
+                              : null,
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                         width: 2,
@@ -174,6 +183,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   onPressed: () async {
                     if (nameController.text.trim().isNotEmpty &&
                         phoneController.text.trim().isNotEmpty) {
+
+                      if (!finalPhoneNumberRegex(phoneController.text)) {
+                        setState(() {
+                          showError = true;
+                        });
+                        return;
+                      }
                       UserModel user = UserModel(
                           name: nameController.text.trim(),
                           phone: phoneController.text.trim());
