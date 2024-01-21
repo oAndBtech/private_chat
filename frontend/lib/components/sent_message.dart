@@ -51,7 +51,7 @@ class SentMessage extends StatelessWidget {
                           : SelectableText(
                               utf8.decode(message.content),
                               style: GoogleFonts.montserrat(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w400,
                                 letterSpacing: -0.2,
                                 color: const Color(0xffEEEEEE),

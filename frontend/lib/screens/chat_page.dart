@@ -256,16 +256,16 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                 ),
                 endDrawer: const ProfileDialog(),
                 body: SafeArea(
-                  child: Column(
-                    children: [
-                      CustomAppBar(
-                        socket: socket,
+                      child: Column(
+                        children: [
+                          CustomAppBar(
+                            socket: socket,
+                          ),
+                          Expanded(child: MessageList(messages: messages)),
+                          BottomComponent(socket: socket)
+                        ],
                       ),
-                      Expanded(child: MessageList(messages: messages)),
-                      BottomComponent(socket: socket)
-                    ],
-                  ),
-                )),
+                                    )),
           );
   }
 }

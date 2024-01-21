@@ -119,7 +119,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Our Chat App',
+      title: 'ChatHub',
       home: isLoading
           ? const Scaffold(
               backgroundColor:Color(0xff111216),
