@@ -166,9 +166,9 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
                       color: const Color(0xffFFFFFF),
                     ),
                     minLines: 1,
-                    maxLines: 6,
+                    maxLines: 4,
                     onChanged: (value) {
-                      if (value.endsWith(" @") || value == "@") {
+                      if (value.endsWith(" @") || value == "@" || value.endsWith("\n@") ) {
                         setState(() {
                           showPersonTags = true;
                         });
