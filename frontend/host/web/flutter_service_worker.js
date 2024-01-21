@@ -5,7 +5,7 @@ const CACHE_NAME = 'flutter-app-cache';
 
 const RESOURCES = {"version.json": "a8e0aec5909ee4a77ea57ec82e856c51",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"main.dart.js": "7ba291e760d8c073e8a380fff2b36039",
+"main.dart.js": "6e36ae43c6b2e60fc06ee12a1d226d93",
 "canvaskit/canvaskit.js": "eb8797020acdbdf96a12fb0405582c1b",
 "canvaskit/canvaskit.wasm": "73584c1a3367e3eaf757647a8f5c5989",
 "canvaskit/skwasm.worker.js": "bfb704a6c714a75da9ef320991e88b03",
@@ -13,7 +13,6 @@ const RESOURCES = {"version.json": "a8e0aec5909ee4a77ea57ec82e856c51",
 "canvaskit/chromium/canvaskit.js": "0ae8bbcc58155679458a0f7a00f66873",
 "canvaskit/chromium/canvaskit.wasm": "143af6ff368f9cd21c863bfa4274c406",
 "canvaskit/skwasm.js": "87063acf45c5e1ab9565dcf06b0c18b8",
-".vscode/settings.json": "8ab8729084acaaa571a2c5e90f13a6ef",
 "flutter.js": "7d69e653079438abfbb24b82a655b0a4",
 "assets/NOTICES": "c2a722823aade767d519eed233f64b5b",
 "assets/packages/flutter_image_compress_web/assets/pica.min.js": "6208ed6419908c4b04382adc8a3053a2",
@@ -35,8 +34,8 @@ const RESOURCES = {"version.json": "a8e0aec5909ee4a77ea57ec82e856c51",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"index.html": "f87588b7475932e15ec0de8510f1cdac",
-"/": "f87588b7475932e15ec0de8510f1cdac",
+"index.html": "b6973b6389eb0e3dd27885be11f2c7f6",
+"/": "b6973b6389eb0e3dd27885be11f2c7f6",
 "firebase-messaging-sw.js": "a2df9ebbd71a8b9854bebbe0f0487402"};
 // The application shell files that are downloaded before a service worker can
 // start.

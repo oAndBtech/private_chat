@@ -19,7 +19,7 @@ class ImageViewer extends ConsumerWidget {
   Future<void> downloadImage(String roomName, BuildContext context) async {
     if (kIsWeb) {
       if (isUrl) {
-        await launchUrl(Uri.parse(url!));
+        await launchUrl(Uri.parse(url!), mode: LaunchMode.inAppWebView);
       } else {
         await StorageService().saveImageWeb(bytes as Uint8List,
             "oandbtech-chat-$roomName-${DateTime.now()}.jpg");
