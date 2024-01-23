@@ -16,6 +16,7 @@ class SocketService {
   sendMessage(String msg, WebSocket? socket, bool isText, String uniqueid,
       String? replyto) {
     if (socket == null) return;
+    print(uniqueid);
     final jsonContent = jsonEncode({
       'content': msg,
       'istext': isText,

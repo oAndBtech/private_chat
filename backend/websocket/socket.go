@@ -81,7 +81,8 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
-			break
+			// break
+			continue
 		}
 
 		var jsonMsg Message
