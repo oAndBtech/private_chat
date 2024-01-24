@@ -54,7 +54,7 @@ dependencies:
   flutter_svg: ^2.0.9
   image_gallery_saver: ^2.0.3
   dio: ^5.4.0
-  url_launcher: ^6.2.3
+  url_launcher: ^6.2.4
   universal_html: ^2.2.4
   flutter_local_notifications: ^16.3.0
   rich_text_controller: ^1.4.2

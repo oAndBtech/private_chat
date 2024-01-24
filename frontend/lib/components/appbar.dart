@@ -31,11 +31,11 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
     super.didChangeDependencies();
   }
 
-  groupMembersDialog() {
+  groupMembersDialog(title) {
     return AlertDialog(
       backgroundColor: const Color(0xff111216),
       title: Text(
-        "Group Members",
+        title,
         style: GoogleFonts.montserrat(
             fontSize: 21,
             fontWeight: FontWeight.w500,
@@ -57,7 +57,7 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
     List<Widget> list = List.generate(
         usrs.length,
         (index) =>
-            MemberElement(name: usrs[index].name, number: usrs[index].phone));
+            MemberElement(name: usrs[index].name, number: usrs[index].phone, isTag: false,));
     return list;
   }
 
@@ -142,7 +142,8 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
                 onTap: () {
                   showDialog(
                       context: context,
-                      builder: ((context) => groupMembersDialog()));
+                      builder: ((context) =>
+                          groupMembersDialog("Group members")));
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,6 +172,26 @@ class _CustomAppBarState extends ConsumerState<CustomAppBar> {
               ),
             ),
             const Spacer(),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: ((context) =>
+                          groupMembersDialog("Select to call")));
+                },
+                child: const Icon(
+                  Icons.call,
+                  color: Color(0xffFFFFFF),
+                  size: 26,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
             GestureDetector(
               onTapDown: (details) {
                 _showPopupMenu(context, details);

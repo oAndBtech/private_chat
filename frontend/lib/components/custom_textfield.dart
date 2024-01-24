@@ -124,7 +124,7 @@ class _CustomTextfieldState extends ConsumerState<CustomTextfield> {
                         textFieldFocusNode.requestFocus();
                       },
                       child: MemberElement(
-                          name: usrs[index].name, number: usrs[index].phone),
+                          name: usrs[index].name, number: usrs[index].phone, isTag: true,),
                     );
                   },
                 ),
