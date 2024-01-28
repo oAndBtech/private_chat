@@ -81,8 +81,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
-			// break
-			continue
+			break
 		}
 
 		var jsonMsg Message
@@ -115,7 +114,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content), jsonMsg.IsText, senderName,jsonMsg.UniqueId,jsonMsg.ReplyTo)
+		storeMessage(userIdInteger, roomID, []byte(jsonMsg.Content), jsonMsg.IsText, senderName, jsonMsg.UniqueId, jsonMsg.ReplyTo)
 		broadcast(roomID, conn, broadcastJSON)
 		notifications.NewMessageArriveNotification(roomID, senderName, userIdInteger, jsonMsg.IsText)
 	}

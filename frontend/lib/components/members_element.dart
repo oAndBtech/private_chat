@@ -4,8 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class MemberElement extends StatelessWidget {
   const MemberElement(
-      {required this.name, required this.isTag, required this.number, Key? key})
-      : super(key: key);
+      {required this.name, required this.isTag, required this.number, super.key});
 
   final String name;
   final String number;

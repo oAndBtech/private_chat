@@ -1,12 +1,10 @@
 import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:private_chat/components/custom_route.dart';
 import 'package:private_chat/screens/image_viewer.dart';
 
 class ImageContainer extends StatelessWidget {
-  const ImageContainer({Key? key, this.bytes, this.isUrl = true, this.url})
-      : super(key: key);
+  const ImageContainer({super.key, this.bytes, this.isUrl = true, this.url});
   final bool isUrl;
   final List<int>? bytes;
   final String? url;

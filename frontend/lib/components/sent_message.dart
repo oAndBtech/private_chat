@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:private_chat/components/img_container.dart';
 import 'package:private_chat/models/message_model.dart';
+import 'package:private_chat/services/test.dart';
 
 class SentMessage extends StatelessWidget {
   const SentMessage({required this.message, super.key});
@@ -48,15 +49,22 @@ class SentMessage extends StatelessWidget {
                               url: utf8.decode(message.content),
                               isUrl: true,
                             )
-                          : SelectableText(
-                              utf8.decode(message.content),
-                              style: GoogleFonts.montserrat(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: -0.2,
-                                color: const Color(0xffEEEEEE),
-                              ),
-                            ),
+                          : 
+                          RichText(
+                              text: TextSpan(
+                              children: TestTagColors()
+                                  .initFunction(utf8.decode(message.content)),
+                            )),
+
+                  // SelectableText(
+                  //     utf8.decode(message.content),
+                  //     style: GoogleFonts.montserrat(
+                  //       fontSize: 14,
+                  //       fontWeight: FontWeight.w400,
+                  //       letterSpacing: -0.2,
+                  //       color: const Color(0xffEEEEEE),
+                  //     ),
+                  //   ),
                 ],
               ),
             ),

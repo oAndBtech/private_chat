@@ -22,7 +22,7 @@ import 'package:web_socket_client/web_socket_client.dart';
 class CustomTextfield extends ConsumerStatefulWidget {
   const CustomTextfield(
       {super.key, required this.messageController, this.socket});
-  final RichTextController messageController;
+  final TextEditingController messageController;
   final WebSocket? socket;
 
   @override

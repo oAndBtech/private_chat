@@ -25,17 +25,19 @@ class BottomComponent extends ConsumerStatefulWidget {
 }
 
 class _BottomComponentState extends ConsumerState<BottomComponent> {
-  RichTextController messageController = RichTextController(
-      patternMatchMap: {
-        RegExp(r"@(.*)+\(+([6789]\d{9})+\)"): GoogleFonts.montserrat(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: Colors.blue,
-        ),
-      },
-      onMatch: (List<String> matches) {},
-      deleteOnBack: true,
-      regExpUnicode: true);
+  // RichTextController messageController = RichTextController(
+  //     patternMatchMap: {
+  //       RegExp(r"@(.*)+\(+([6789]\d{9})+\)"): GoogleFonts.montserrat(
+  //         fontSize: 16,
+  //         fontWeight: FontWeight.w500,
+  //         color: Colors.blue,
+  //       ),
+  //     },
+  //     onMatch: (List<String> matches) {},
+  //     deleteOnBack: true,
+  //     regExpUnicode: true);
+
+  TextEditingController messageController = TextEditingController();
 
   void sendMessage() {
     String text = messageController.text.trim();
