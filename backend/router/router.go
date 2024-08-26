@@ -13,7 +13,7 @@ func Router() *mux.Router {
 	r := mux.NewRouter()
 
 	headersOk := handlers.AllowedHeaders([]string{"Content-Type"})
-	originsOk := handlers.AllowedOrigins([]string{"*"})
+	originsOk := handlers.AllowedOrigins([]string{"https://chat.bhaskaraa45.me"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
 
 	// Apply CORS middleware to the router
